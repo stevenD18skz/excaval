@@ -1,36 +1,76 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# EXCAVLA
 
-## Getting Started
+Sistema de Gestión Administrativa y Operativa para una empresa de maquinaria pesada. Centraliza el flujo de caja, la gestión documental y el estado de la maquinaria en una interfaz de extrema simplicidad, pensada para un único tipo de usuario: Gerencia/Directivos.
 
-First, run the development server:
+## Contexto del proyecto
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+A diferencia de un ERP complejo con múltiples roles, Excavla elimina esa complejidad: todo el sistema está diseñado para que un directivo consulte y registre información desde el campo de obra, en el celular, sin curva de aprendizaje.
+
+### Módulos
+
+| Módulo | Qué resuelve |
+|---|---|
+| **Dashboard** | Página de inicio con resumen de dinero (ingresos, egresos, ganancia neta del mes) y visualización gráfica de balances. |
+| **Libro de Cuentas Digital** | Registro de ingresos con estado ("Pagado" / "Por Cobrar") y seguimiento automático de facturas pendientes. |
+| **Control de Salidas (Egresos y Sueldos)** | Gastos categorizados (repuestos, reparaciones, gasolina, "gastos de punto") y pagos a operarios, en modo transaccional para evitar descuadres. |
+| **Semáforo de la Máquina** | Estado operativo del activo: Trabajando / Disponible / Mantenimiento, ubicación actual y cliente/proyecto asignado. |
+| **Gestión Documental y CRM** | Archivo de papeles (fotos de facturas/recibos por transacción) y archivo de clientes, con buscador global. |
+
+### Requerimientos no funcionales
+
+- **Mobile-first**: los directivos consultan principalmente desde el campo de obra.
+- **Validación de datos** en cliente y servidor, para evitar errores contables.
+- **Cero curva de aprendizaje**: formularios guiados y tarjetas (cards) en vez de tablas densas.
+
+## Stack técnico
+
+- **Front-end**: [Next.js](https://nextjs.org) (App Router) + [Tailwind CSS](https://tailwindcss.com)
+- **Back-end**: Next.js API Routes (serverless, mismo repositorio)
+- **Base de datos**: PostgreSQL vía [Supabase](https://supabase.com)
+- **Storage**: Supabase Storage (archivo de papeles/facturas)
+- **Auth**: Supabase Auth (correo electrónico/contraseña)
+- **Gestor de paquetes**: pnpm
+
+### Entidades núcleo (referencia)
+
+```
+users            id, email, created_at
+clients          id, name, phone, company, created_at
+transactions     id, type (INCOME|EXPENSE), category (SUELDO|REPUESTO|SERVICIO|PUNTO),
+                 amount, status (PAID|PENDING), client_id, description, receipt_url, date
+machine_status   id, status (WORKING|AVAILABLE|MAINTENANCE), location, client_id, updated_at
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Desarrollo local
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+pnpm install
+pnpm dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Abre [http://localhost:3000](http://localhost:3000).
 
-## Learn More
+Otros scripts:
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+pnpm build   # build de producción
+pnpm start   # sirve el build de producción
+pnpm lint    # eslint
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Variables de entorno
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Este proyecto usará Supabase. Al configurarlo, crea un `.env.local` (ignorado por git) con:
 
-## Deploy on Vercel
+```
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+SUPABASE_SERVICE_ROLE_KEY=
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Despliegue
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+El proyecto está vinculado a Vercel y conectado al repositorio de GitHub: cada push a `main` despliega a producción, y las demás ramas generan preview deployments automáticamente.
+
+- Producción: https://excaval.vercel.app
+- Repositorio: https://github.com/stevenD18skz/excaval
