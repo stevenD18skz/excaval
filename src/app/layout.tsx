@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { Barlow, Barlow_Condensed } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
-import { Sidebar } from "@/components/excavla/sidebar";
-import { BottomNav } from "@/components/excavla/bottom-nav";
 import "./globals.css";
 
 const barlow = Barlow({
@@ -33,12 +31,8 @@ export default function RootLayout({
       lang="es"
       className={`${barlow.variable} ${barlowCondensed.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-paper text-text lg:flex-row">
-        <Sidebar className="hidden lg:flex" />
-        <div className="flex min-h-full flex-1 flex-col lg:h-screen lg:overflow-y-auto">
-          {children}
-        </div>
-        <BottomNav className="lg:hidden" />
+      <body className="flex min-h-full flex-col bg-paper text-text">
+        {children}
         <Toaster />
       </body>
     </html>

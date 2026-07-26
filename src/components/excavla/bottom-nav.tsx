@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { NAV_ITEMS } from "./nav-items";
 
 function isActive(pathname: string, href: string) {
-  return href === "/" ? pathname === "/" : pathname.startsWith(href);
+  return pathname.startsWith(href);
 }
 
 /** Nav inferior fijo, 5 botones — chrome compartido de las pantallas móviles. */

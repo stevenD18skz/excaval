@@ -199,6 +199,23 @@ export const expenses: Expense[] = [
   },
 ];
 
+/**
+ * Fotos de referencia por tipo de máquina — placeholders reales tomados de
+ * Wikimedia Commons (dominio público / licencia libre) mientras la empresa
+ * sube fotos propias de cada activo desde la hoja del semáforo.
+ */
+const STOCK_PHOTO = {
+  excavadora: "https://upload.wikimedia.org/wikipedia/commons/b/bc/Excavator_0025.jpg",
+  retroexcavadora:
+    "https://upload.wikimedia.org/wikipedia/commons/f/f5/JCB_3CX_backhoe_loader.JPG",
+  volqueta: "https://upload.wikimedia.org/wikipedia/commons/c/cf/Caterpillar_dump_truck.jpg",
+  rodillo: "https://upload.wikimedia.org/wikipedia/commons/7/77/A_Road_roller.JPG",
+  motoniveladora:
+    "https://upload.wikimedia.org/wikipedia/commons/d/d4/Caterpillar_12G_grader_MD3.jpg",
+  cargador:
+    "https://upload.wikimedia.org/wikipedia/commons/1/18/Caterpillar_950k_Wheel_Loader.jpg",
+} as const;
+
 export const machines: Machine[] = [
   {
     code: "EX-01",
@@ -210,6 +227,7 @@ export const machines: Machine[] = [
     hours: "14.820 h",
     since: "desde 12 mar",
     updated: "Hoy 06:40 · operario J. Muñoz",
+    photo: STOCK_PHOTO.excavadora,
   },
   {
     code: "RX-01",
@@ -221,6 +239,7 @@ export const machines: Machine[] = [
     hours: "9.410 h",
     since: "desde 3 jul",
     updated: "Ayer 17:20 · operario A. Ceballos",
+    photo: STOCK_PHOTO.retroexcavadora,
   },
   {
     code: "VQ-01",
@@ -232,6 +251,7 @@ export const machines: Machine[] = [
     hours: "186.400 km",
     since: "desde 20 jul",
     updated: "Hoy 05:55 · operario W. Ospina",
+    photo: STOCK_PHOTO.volqueta,
   },
   {
     code: "VQ-02",
@@ -243,6 +263,7 @@ export const machines: Machine[] = [
     hours: "142.900 km",
     since: "desde 18 jul",
     updated: "Hoy 08:10 · operario W. Ospina",
+    photo: STOCK_PHOTO.volqueta,
   },
   {
     code: "RD-01",
@@ -254,6 +275,7 @@ export const machines: Machine[] = [
     hours: "6.230 h",
     since: "desde 11 jul",
     updated: "Hoy 07:00 · operario S. Ríos",
+    photo: STOCK_PHOTO.rodillo,
   },
   {
     code: "MN-01",
@@ -265,6 +287,7 @@ export const machines: Machine[] = [
     hours: "11.050 h",
     since: "desde 14 jul",
     updated: "Hoy 06:15 · operario C. Vélez",
+    photo: STOCK_PHOTO.motoniveladora,
   },
   {
     code: "CG-01",
@@ -276,6 +299,7 @@ export const machines: Machine[] = [
     hours: "8.760 h",
     since: "desde 6 jul",
     updated: "Ayer 16:40 · operario J. Muñoz",
+    photo: STOCK_PHOTO.cargador,
   },
   {
     code: "EX-02",
@@ -287,5 +311,6 @@ export const machines: Machine[] = [
     hours: "18.230 h",
     since: "desde 22 jul",
     updated: "Hoy 09:05 · operario A. Ceballos",
+    photo: STOCK_PHOTO.excavadora,
   },
 ];

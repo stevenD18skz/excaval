@@ -39,6 +39,7 @@ export interface Machine {
   hours: string; // '14.820 h' (horómetro) o '186.400 km' para volquetas
   since: string; // 'desde 12 mar'
   updated: string; // 'Hoy 06:40 · operario J. Muñoz'
+  photo: string; // URL o data URL de la foto de la máquina
 }
 
 export interface Client {

@@ -45,6 +45,7 @@ export function MaquinasView() {
 
   const machines = useExcavlaStore((s) => s.machines);
   const setMachineStatus = useExcavlaStore((s) => s.setMachineStatus);
+  const setMachinePhoto = useExcavlaStore((s) => s.setMachinePhoto);
 
   function setParams(mutate: (params: URLSearchParams) => void) {
     const params = new URLSearchParams(searchParams.toString());
@@ -72,6 +73,11 @@ export function MaquinasView() {
   function handleChangeStatus(code: string, status: MachineStatus) {
     setMachineStatus(code, status);
     showActionToast(`${code} → ${machineStatusLabel(status)}. Semáforo actualizado.`);
+  }
+
+  function handleUploadPhoto(code: string, photo: string) {
+    setMachinePhoto(code, photo);
+    showActionToast(`${code} → foto actualizada.`);
   }
 
   const filtered =
@@ -143,6 +149,7 @@ export function MaquinasView() {
             if (!open) closeDetail();
           }}
           onChangeStatus={handleChangeStatus}
+          onUploadPhoto={handleUploadPhoto}
         />
       </div>
 
@@ -189,6 +196,7 @@ export function MaquinasView() {
                   key={m.code}
                   machine={m}
                   onChangeStatus={handleChangeStatus}
+                  onUploadPhoto={handleUploadPhoto}
                 />
               ))}
             </div>

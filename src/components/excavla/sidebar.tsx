@@ -2,17 +2,26 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { RotateCcw } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useExcavlaStore } from "@/lib/excavla/store";
+import { showActionToast } from "./action-toast";
 import { NAV_ITEMS } from "./nav-items";
 import { HazardTape } from "./hazard-tape";
 
 function isActive(pathname: string, href: string) {
-  return href === "/" ? pathname === "/" : pathname.startsWith(href);
+  return pathname.startsWith(href);
 }
 
 /** Barra lateral fija de escritorio, 216px — reemplaza el nav inferior a partir de `lg`. */
 export function Sidebar({ className }: { className?: string }) {
   const pathname = usePathname();
+  const resetDemo = useExcavlaStore((s) => s.resetDemo);
+
+  function handleReset() {
+    resetDemo();
+    showActionToast("Simulación reiniciada. Los datos de la empresa ficticia volvieron a su punto de partida.");
+  }
 
   return (
     <aside
@@ -56,6 +65,14 @@ export function Sidebar({ className }: { className?: string }) {
         <p className="px-[18px] pt-3 text-[11px] text-text-4">
           Datos al 25 de julio · COP
         </p>
+        <button
+          type="button"
+          onClick={handleReset}
+          className="mt-2 flex items-center gap-1.5 px-[18px] pb-1 font-heading text-[10.5px] font-semibold tracking-[.06em] text-nav-inactive uppercase hover:text-accent-500"
+        >
+          <RotateCcw className="h-3 w-3" strokeWidth={1.8} />
+          Reiniciar simulación
+        </button>
       </div>
     </aside>
   );

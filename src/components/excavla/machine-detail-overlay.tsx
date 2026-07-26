@@ -8,6 +8,7 @@ import { Blueprint } from "./blueprint";
 import { Plate } from "./plate";
 import { TrafficLight } from "./traffic-light";
 import { MachineStatusControl } from "./machine-status-control";
+import { MachinePhotoUpload } from "./machine-photo-upload";
 
 function InfoCard({
   icon,
@@ -36,6 +37,7 @@ interface MachineDetailOverlayProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onChangeStatus: (code: string, status: MachineStatus) => void;
+  onUploadPhoto: (code: string, photo: string) => void;
 }
 
 /** Hoja de cambio de estado del semáforo — solo móvil (en escritorio es inline en la tarjeta). */
@@ -44,6 +46,7 @@ export function MachineDetailOverlay({
   open,
   onOpenChange,
   onChangeStatus,
+  onUploadPhoto,
 }: MachineDetailOverlayProps) {
   if (!machine) return null;
 
@@ -65,6 +68,13 @@ export function MachineDetailOverlay({
         </div>
 
         <div className="flex flex-col gap-4 overflow-y-auto p-4">
+          <MachinePhotoUpload
+            src={machine.photo}
+            alt={machine.name}
+            onUpload={(dataUrl) => onUploadPhoto(machine.code, dataUrl)}
+            className="h-44 w-full"
+          />
+
           <div>
             <h2 className="font-heading text-[23px] font-semibold text-ink">{machine.name}</h2>
             <p className="mt-1 text-[13px] text-text-2">

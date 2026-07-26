@@ -18,7 +18,7 @@ export function MachineNavIcon({ className, strokeWidth }: LucideProps) {
 }
 
 export const NAV_ITEMS = [
-  { href: "/", label: "Inicio", icon: Home },
+  { href: "/dashboard", label: "Inicio", icon: Home },
   { href: "/cuentas", label: "Cuentas", icon: FileText },
   { href: "/salidas", label: "Salidas", icon: ArrowDownToLine },
   { href: "/maquinas", label: "Máquinas", icon: MachineNavIcon },

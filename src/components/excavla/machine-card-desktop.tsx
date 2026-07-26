@@ -4,6 +4,7 @@ import { Blueprint } from "./blueprint";
 import { Plate } from "./plate";
 import { TrafficLight } from "./traffic-light";
 import { MachineStatusControl } from "./machine-status-control";
+import { MachinePhotoUpload } from "./machine-photo-upload";
 import {
   StatusBadge,
   machineStatusLabel,
@@ -19,15 +20,28 @@ const BORDER_VAR: Record<MachineStatus, string> = {
 interface MachineCardDesktopProps {
   machine: Machine;
   onChangeStatus: (code: string, status: MachineStatus) => void;
+  onUploadPhoto: (code: string, photo: string) => void;
 }
 
 /** Tarjeta de máquina de escritorio — el estado se cambia inline, sin abrir nada. */
-export function MachineCardDesktop({ machine, onChangeStatus }: MachineCardDesktopProps) {
+export function MachineCardDesktop({
+  machine,
+  onChangeStatus,
+  onUploadPhoto,
+}: MachineCardDesktopProps) {
   return (
     <div
       className="flex gap-3.5 border-t-4 p-3.5"
       style={{ borderTopColor: BORDER_VAR[machine.status] }}
     >
+      <MachinePhotoUpload
+        src={machine.photo}
+        alt={machine.name}
+        onUpload={(dataUrl) => onUploadPhoto(machine.code, dataUrl)}
+        compact
+        className="h-24 w-24"
+      />
+
       <Blueprint tone="dark" className="shrink-0 self-start">
         <TrafficLight status={machine.status} dotSize={19} variant="dark" />
       </Blueprint>

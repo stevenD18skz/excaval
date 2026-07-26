@@ -3,6 +3,7 @@ import { MapPin } from "lucide-react";
 import type { Machine } from "@/lib/excavla/types";
 import { Plate } from "./plate";
 import { TrafficLight } from "./traffic-light";
+import { MachinePhoto } from "./machine-photo";
 import {
   StatusBadge,
   machineStatusLabel,
@@ -18,6 +19,8 @@ interface MachineCardProps {
 export function MachineCard({ machine, href }: MachineCardProps) {
   return (
     <Link href={href} className="flex gap-3 border border-divider p-3">
+      <MachinePhoto src={machine.photo} alt={machine.name} className="h-[68px] w-14" />
+
       <div className="flex shrink-0 flex-col items-center gap-2">
         <Plate variant="dark" className="h-[34px] w-[46px] text-[13px]">
           {machine.code}
