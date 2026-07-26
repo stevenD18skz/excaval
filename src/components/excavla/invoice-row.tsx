@@ -1,0 +1,80 @@
+import Link from "next/link";
+import { cn } from "@/lib/utils";
+import type { Invoice } from "@/lib/excavla/types";
+import { Button } from "@/components/ui/button";
+import { Plate } from "./plate";
+import { Money } from "./money";
+import {
+  StatusBadge,
+  invoiceStatusLabel,
+  invoiceStatusTone,
+} from "./status-badge";
+
+const BORDER_VAR = {
+  paid: "var(--status-working)",
+  pending: "var(--status-available)",
+  overdue: "var(--status-maintenance)",
+};
+
+function borderColorFor(invoice: Invoice): string {
+  if (invoice.status === "PAID") return BORDER_VAR.paid;
+  return invoice.overdue ? BORDER_VAR.overdue : BORDER_VAR.pending;
+}
+
+interface InvoiceRowProps {
+  invoice: Invoice;
+  clientName: string;
+  detailHref: string;
+  onMarkPaid: (id: string) => void;
+}
+
+/** Fila de factura de escritorio: acciones inline (cobrar y ver papel). */
+export function InvoiceRow({
+  invoice,
+  clientName,
+  detailHref,
+  onMarkPaid,
+}: InvoiceRowProps) {
+  return (
+    <div
+      className="flex items-center gap-4 border-b border-divider p-[13px_15px] last:border-b-0"
+      style={{ borderLeft: `5px solid ${borderColorFor(invoice)}` }}
+    >
+      <Plate variant="dark" className="h-8 shrink-0 px-1.5">
+        {invoice.id}
+      </Plate>
+      <span className="min-w-0 flex-1">
+        <span className="block font-heading text-[17px] font-semibold text-ink">
+          {clientName}
+        </span>
+        <span className="block truncate text-[12.5px] text-text-2">
+          {invoice.concept}
+        </span>
+      </span>
+      <StatusBadge tone={invoiceStatusTone(invoice)} className="shrink-0">
+        {invoiceStatusLabel(invoice)}
+      </StatusBadge>
+      <span
+        className={cn(
+          "w-[118px] shrink-0 text-right text-[12.5px]",
+          invoice.overdue ? "text-status-maintenance" : "text-text-3"
+        )}
+      >
+        {invoice.due}
+      </span>
+      <span className="tabular font-heading w-[145px] shrink-0 text-right text-xl font-semibold text-ink">
+        <Money value={invoice.amount} />
+      </span>
+      <span className="flex w-[190px] shrink-0 items-center justify-end gap-2">
+        {invoice.status === "PENDING" ? (
+          <Button type="button" className="min-h-10" onClick={() => onMarkPaid(invoice.id)}>
+            Marcar cobrada
+          </Button>
+        ) : null}
+        <Button variant="outline" render={<Link href={detailHref} />} className="min-h-10">
+          Ver papel
+        </Button>
+      </span>
+    </div>
+  );
+}

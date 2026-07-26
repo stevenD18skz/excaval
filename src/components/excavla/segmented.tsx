@@ -1,0 +1,52 @@
+"use client";
+
+import { cn } from "@/lib/utils";
+
+interface SegmentedOption {
+  value: string;
+  label: string;
+  count?: number;
+}
+
+interface SegmentedProps {
+  options: SegmentedOption[];
+  value: string;
+  onChange: (value: string) => void;
+  size?: "mobile" | "desktop";
+  className?: string;
+}
+
+/** Segmentado de filtro: activo negro/blanco, inactivo blanco. */
+export function Segmented({
+  options,
+  value,
+  onChange,
+  size = "mobile",
+  className,
+}: SegmentedProps) {
+  return (
+    <div className={cn("flex border border-ink", className)}>
+      {options.map((opt, i) => {
+        const active = opt.value === value;
+        return (
+          <button
+            key={opt.value}
+            type="button"
+            onClick={() => onChange(opt.value)}
+            className={cn(
+              "flex-1 font-heading font-semibold uppercase",
+              size === "mobile"
+                ? "min-h-11 text-[12.5px]"
+                : "min-h-10 px-4 py-[9px] text-[12.5px]",
+              i > 0 && "border-l border-ink",
+              active ? "bg-ink text-paper" : "bg-paper text-text-2"
+            )}
+          >
+            {opt.label}
+            {opt.count !== undefined ? ` ${opt.count}` : ""}
+          </button>
+        );
+      })}
+    </div>
+  );
+}

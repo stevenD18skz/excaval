@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import {
   AlertTriangle,
@@ -16,17 +18,13 @@ import { BalanceChart } from "@/components/excavla/balance-chart";
 import { ExpenseBreakdown } from "@/components/excavla/expense-breakdown";
 import { MobileHeader } from "@/components/excavla/mobile-header";
 import { DesktopTopbar } from "@/components/excavla/desktop-topbar";
+import { showActionToast } from "@/components/excavla/action-toast";
 import {
   StatusBadge,
   machineStatusLabel,
   machineStatusTone,
 } from "@/components/excavla/status-badge";
-import {
-  clients,
-  expenses,
-  invoices,
-  machines,
-} from "@/lib/excavla/seed-data";
+import { useExcavlaStore } from "@/lib/excavla/store";
 import {
   computeAggregates,
   expenseBreakdown,
@@ -55,11 +53,26 @@ function dayOf(dateStr: string): number {
   return parseInt(dateStr, 10) || 0;
 }
 
-function clientName(clientId: string): string {
-  return clients.find((c) => c.id === clientId)?.name ?? clientId;
-}
-
 export default function DashboardPage() {
+  const invoices = useExcavlaStore((s) => s.invoices);
+  const expenses = useExcavlaStore((s) => s.expenses);
+  const machines = useExcavlaStore((s) => s.machines);
+  const clients = useExcavlaStore((s) => s.clients);
+  const markInvoicePaid = useExcavlaStore((s) => s.markInvoicePaid);
+  const undoInvoicePaid = useExcavlaStore((s) => s.undoInvoicePaid);
+
+  function clientName(clientId: string): string {
+    return clients.find((c) => c.id === clientId)?.name ?? clientId;
+  }
+
+  function handleMarkPaid(id: string) {
+    markInvoicePaid(id);
+    showActionToast(
+      `Factura ${id} marcada como cobrada. Ingreso confirmado en el libro.`,
+      () => undoInvoicePaid(id)
+    );
+  }
+
   const agg = computeAggregates(invoices, expenses);
   const breakdown = expenseBreakdown(expenses);
   const fleet = fleetCounts(machines);
@@ -402,10 +415,9 @@ export default function DashboardPage() {
                         <Money value={inv.amount} />
                       </span>
                       <Button
-                        render={
-                          <Link href={`/cuentas?filter=pendientes&factura=${inv.id}`} />
-                        }
+                        type="button"
                         className="min-h-10 shrink-0"
+                        onClick={() => handleMarkPaid(inv.id)}
                       >
                         Marcar cobrada
                       </Button>
