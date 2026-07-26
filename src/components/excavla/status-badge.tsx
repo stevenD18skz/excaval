@@ -62,3 +62,15 @@ export function invoiceStatusTone(invoice: Invoice): StatusTone {
   if (invoice.status === "PAID") return "working";
   return invoice.overdue ? "maintenance" : "available";
 }
+
+const TONE_BORDER_VAR: Record<StatusTone, string> = {
+  working: "var(--status-working)",
+  available: "var(--status-available)",
+  maintenance: "var(--status-maintenance)",
+  off: "var(--status-off)",
+};
+
+/** Color de borde de énfasis (border-left) según el estado de la factura. */
+export function invoiceBorderColor(invoice: Invoice): string {
+  return TONE_BORDER_VAR[invoiceStatusTone(invoice)];
+}

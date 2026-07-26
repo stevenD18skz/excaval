@@ -6,20 +6,10 @@ import { Plate } from "./plate";
 import { Money } from "./money";
 import {
   StatusBadge,
+  invoiceBorderColor,
   invoiceStatusLabel,
   invoiceStatusTone,
 } from "./status-badge";
-
-const BORDER_VAR = {
-  paid: "var(--status-working)",
-  pending: "var(--status-available)",
-  overdue: "var(--status-maintenance)",
-};
-
-function borderColorFor(invoice: Invoice): string {
-  if (invoice.status === "PAID") return BORDER_VAR.paid;
-  return invoice.overdue ? BORDER_VAR.overdue : BORDER_VAR.pending;
-}
 
 interface InvoiceCardProps {
   invoice: Invoice;
@@ -33,7 +23,7 @@ export function InvoiceCard({ invoice, clientName, href }: InvoiceCardProps) {
     <Link
       href={href}
       className="flex flex-col gap-2 border border-divider p-3"
-      style={{ borderLeft: `5px solid ${borderColorFor(invoice)}` }}
+      style={{ borderLeft: `5px solid ${invoiceBorderColor(invoice)}` }}
     >
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2">

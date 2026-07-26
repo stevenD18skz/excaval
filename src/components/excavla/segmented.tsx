@@ -13,15 +13,18 @@ interface SegmentedProps {
   value: string;
   onChange: (value: string) => void;
   size?: "mobile" | "desktop";
+  /** "paper": activo negro/blanco (Cuentas). "accent": activo negro/amarillo (Salidas). */
+  tone?: "paper" | "accent";
   className?: string;
 }
 
-/** Segmentado de filtro: activo negro/blanco, inactivo blanco. */
+/** Segmentado de filtro: activo negro, inactivo blanco. */
 export function Segmented({
   options,
   value,
   onChange,
   size = "mobile",
+  tone = "paper",
   className,
 }: SegmentedProps) {
   return (
@@ -39,7 +42,11 @@ export function Segmented({
                 ? "min-h-11 text-[12.5px]"
                 : "min-h-10 px-4 py-[9px] text-[12.5px]",
               i > 0 && "border-l border-ink",
-              active ? "bg-ink text-paper" : "bg-paper text-text-2"
+              active
+                ? tone === "accent"
+                  ? "bg-ink text-accent-500"
+                  : "bg-ink text-paper"
+                : "bg-paper text-text-2"
             )}
           >
             {opt.label}

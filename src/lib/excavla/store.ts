@@ -5,7 +5,7 @@ import {
   invoices as seedInvoices,
   machines as seedMachines,
 } from "./seed-data";
-import type { Invoice } from "./types";
+import type { Expense, ExpenseCat, Invoice, Machine, MachineStatus } from "./types";
 
 /** Fecha de referencia del sistema (ver AGENTS.md / contexto de sesión). */
 const TODAY_SHORT = "26 jul";
@@ -16,14 +16,24 @@ interface UndoSnapshot {
   overdue: boolean;
 }
 
+export interface NewExpenseInput {
+  cat: ExpenseCat;
+  desc: string;
+  amount: number;
+  machine: string;
+  photo: boolean;
+}
+
 interface ExcavlaState {
   invoices: Invoice[];
-  expenses: typeof seedExpenses;
-  machines: typeof seedMachines;
+  expenses: Expense[];
+  machines: Machine[];
   clients: typeof seedClients;
   undoStack: Record<string, UndoSnapshot>;
   markInvoicePaid: (id: string) => void;
   undoInvoicePaid: (id: string) => void;
+  addExpense: (input: NewExpenseInput) => Expense;
+  setMachineStatus: (code: string, status: MachineStatus) => void;
 }
 
 /**
@@ -32,7 +42,7 @@ interface ExcavlaState {
  * sin llamada a red — en producción esto se reemplaza por mutaciones al
  * backend con el mismo patrón optimista.
  */
-export const useExcavlaStore = create<ExcavlaState>((set) => ({
+export const useExcavlaStore = create<ExcavlaState>((set, get) => ({
   invoices: seedInvoices,
   expenses: seedExpenses,
   machines: seedMachines,
@@ -73,4 +83,33 @@ export const useExcavlaStore = create<ExcavlaState>((set) => ({
         undoStack: nextUndoStack,
       };
     }),
+
+  addExpense: (input) => {
+    const expense: Expense = {
+      id: `GAS-${1000 + get().expenses.length}`,
+      cat: input.cat,
+      desc: input.desc,
+      amount: input.amount,
+      date: TODAY_SHORT,
+      machine: input.machine,
+      photo: input.photo,
+    };
+    set((state) => ({ expenses: [expense, ...state.expenses] }));
+    return expense;
+  },
+
+  setMachineStatus: (code, status) =>
+    set((state) => ({
+      machines: state.machines.map((m) =>
+        m.code === code
+          ? {
+              ...m,
+              status,
+              client: status === "WORKING" ? m.client : "Sin asignar",
+              since: "desde hoy",
+              updated: "Hoy · cambiado desde la obra",
+            }
+          : m
+      ),
+    })),
 }));

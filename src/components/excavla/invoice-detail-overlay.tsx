@@ -117,12 +117,17 @@ function DetailBody({
       ) : null}
 
       <div className="grid grid-cols-2 gap-2">
-        <Button variant="outline" render={<Link href={`/clientes?cliente=${client.id}`} />}>
+        <Button
+          variant="outline"
+          render={<Link href={`/clientes?cliente=${client.id}`} />}
+          nativeButton={false}
+        >
           Ver cliente
         </Button>
         <Button
           variant="outline"
           render={<a href={`tel:${client.phone.replace(/\s+/g, "")}`} />}
+          nativeButton={false}
           className="gap-1.5"
         >
           <Phone className="h-4 w-4" strokeWidth={1.6} />

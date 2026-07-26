@@ -6,20 +6,10 @@ import { Plate } from "./plate";
 import { Money } from "./money";
 import {
   StatusBadge,
+  invoiceBorderColor,
   invoiceStatusLabel,
   invoiceStatusTone,
 } from "./status-badge";
-
-const BORDER_VAR = {
-  paid: "var(--status-working)",
-  pending: "var(--status-available)",
-  overdue: "var(--status-maintenance)",
-};
-
-function borderColorFor(invoice: Invoice): string {
-  if (invoice.status === "PAID") return BORDER_VAR.paid;
-  return invoice.overdue ? BORDER_VAR.overdue : BORDER_VAR.pending;
-}
 
 interface InvoiceRowProps {
   invoice: Invoice;
@@ -38,7 +28,7 @@ export function InvoiceRow({
   return (
     <div
       className="flex items-center gap-4 border-b border-divider p-[13px_15px] last:border-b-0"
-      style={{ borderLeft: `5px solid ${borderColorFor(invoice)}` }}
+      style={{ borderLeft: `5px solid ${invoiceBorderColor(invoice)}` }}
     >
       <Plate variant="dark" className="h-8 shrink-0 px-1.5">
         {invoice.id}
@@ -71,7 +61,12 @@ export function InvoiceRow({
             Marcar cobrada
           </Button>
         ) : null}
-        <Button variant="outline" render={<Link href={detailHref} />} className="min-h-10">
+        <Button
+          variant="outline"
+          render={<Link href={detailHref} />}
+          nativeButton={false}
+          className="min-h-10"
+        >
           Ver papel
         </Button>
       </span>
