@@ -13,13 +13,19 @@ import {
 interface MachineCardProps {
   machine: Machine;
   href: string;
+  priority?: boolean;
 }
 
 /** Tarjeta de máquina móvil — tappable, abre la hoja del semáforo. */
-export function MachineCard({ machine, href }: MachineCardProps) {
+export function MachineCard({ machine, href, priority = false }: MachineCardProps) {
   return (
     <Link href={href} className="flex gap-3 border border-divider p-3">
-      <MachinePhoto src={machine.photo} alt={machine.name} className="h-[68px] w-14" />
+      <MachinePhoto
+        src={machine.photo}
+        alt={machine.name}
+        priority={priority}
+        className="h-[68px] w-14"
+      />
 
       <div className="flex shrink-0 flex-col items-center gap-2">
         <Plate variant="dark" className="h-[34px] w-[46px] text-[13px]">

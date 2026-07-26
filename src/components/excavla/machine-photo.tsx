@@ -6,10 +6,12 @@ interface MachinePhotoProps {
   src?: string | null;
   alt: string;
   className?: string;
+  /** Pásalo en la primera foto visible de cada lista para evitar el warning de LCP. */
+  priority?: boolean;
 }
 
 /** Foto de la máquina, con el mismo placeholder de trama diagonal que el resto del sistema. */
-export function MachinePhoto({ src, alt, className }: MachinePhotoProps) {
+export function MachinePhoto({ src, alt, className, priority = false }: MachinePhotoProps) {
   if (!src) {
     return (
       <div
@@ -25,7 +27,14 @@ export function MachinePhoto({ src, alt, className }: MachinePhotoProps) {
 
   return (
     <div className={cn("relative shrink-0 overflow-hidden border border-ink", className)}>
-      <Image src={src} alt={alt} fill unoptimized className="object-cover" />
+      <Image
+        src={src}
+        alt={alt}
+        fill
+        unoptimized
+        priority={priority}
+        className="object-cover"
+      />
     </div>
   );
 }

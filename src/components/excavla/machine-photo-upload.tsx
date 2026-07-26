@@ -12,6 +12,8 @@ interface MachinePhotoUploadProps {
   onUpload: (dataUrl: string) => void;
   /** Icono solo, sin label — para miniaturas chicas (tarjeta de escritorio). */
   compact?: boolean;
+  /** Pásalo en la primera foto visible de cada lista para evitar el warning de LCP. */
+  priority?: boolean;
   className?: string;
 }
 
@@ -21,6 +23,7 @@ export function MachinePhotoUpload({
   alt,
   onUpload,
   compact = false,
+  priority = false,
   className,
 }: MachinePhotoUploadProps) {
   const [loading, setLoading] = useState(false);
@@ -41,7 +44,7 @@ export function MachinePhotoUpload({
 
   return (
     <div className={cn("relative", className)}>
-      <MachinePhoto src={src} alt={alt} className="h-full w-full" />
+      <MachinePhoto src={src} alt={alt} priority={priority} className="h-full w-full" />
       <label
         className={cn(
           "absolute right-1 bottom-1 flex items-center gap-1.5 border border-ink bg-paper font-heading text-xs font-semibold text-ink uppercase",

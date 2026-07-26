@@ -21,6 +21,7 @@ interface MachineCardDesktopProps {
   machine: Machine;
   onChangeStatus: (code: string, status: MachineStatus) => void;
   onUploadPhoto: (code: string, photo: string) => void;
+  priority?: boolean;
 }
 
 /** Tarjeta de máquina de escritorio — el estado se cambia inline, sin abrir nada. */
@@ -28,6 +29,7 @@ export function MachineCardDesktop({
   machine,
   onChangeStatus,
   onUploadPhoto,
+  priority = false,
 }: MachineCardDesktopProps) {
   return (
     <div
@@ -39,6 +41,7 @@ export function MachineCardDesktop({
         alt={machine.name}
         onUpload={(dataUrl) => onUploadPhoto(machine.code, dataUrl)}
         compact
+        priority={priority}
         className="h-24 w-24"
       />
 

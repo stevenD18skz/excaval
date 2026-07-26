@@ -121,8 +121,13 @@ export function MaquinasView() {
           </div>
 
           <div className="flex flex-col gap-2.5">
-            {filtered.map((m) => (
-              <MachineCard key={m.code} machine={m} href={machineHref(m.code)} />
+            {filtered.map((m, i) => (
+              <MachineCard
+                key={m.code}
+                machine={m}
+                href={machineHref(m.code)}
+                priority={i === 0}
+              />
             ))}
           </div>
 
@@ -191,12 +196,13 @@ export function MaquinasView() {
             </div>
 
             <div className="grid grid-cols-2 gap-3">
-              {filtered.map((m) => (
+              {filtered.map((m, i) => (
                 <MachineCardDesktop
                   key={m.code}
                   machine={m}
                   onChangeStatus={handleChangeStatus}
                   onUploadPhoto={handleUploadPhoto}
+                  priority={i === 0}
                 />
               ))}
             </div>

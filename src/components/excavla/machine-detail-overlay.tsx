@@ -72,6 +72,7 @@ export function MachineDetailOverlay({
             src={machine.photo}
             alt={machine.name}
             onUpload={(dataUrl) => onUploadPhoto(machine.code, dataUrl)}
+            priority
             className="h-44 w-full"
           />
 
