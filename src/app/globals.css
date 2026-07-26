@@ -1,31 +1,220 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
 
 :root {
-  --background: #ffffff;
-  --foreground: #111111;
+  /* EXCAVLA — estructura */
+  --ink: #141414;
+  --ink-soft: #242422;
+  --ink-line: #2c2c2a;
+  --ink-dim: #4a4a46;
+  --paper: #ffffff;
+  --surface: #f6f6f4;
 
-  /* Paleta de marca EXCAVLA: blanco, amarillo y negro, colores de maquinaria pesada */
-  --brand-yellow: #ffc700;
-  --brand-yellow-dark: #e0ac00;
-  --brand-black: #111111;
-  --brand-gray: #6b7280;
-  --brand-gray-light: #f4f4f5;
+  /* EXCAVLA — hairlines */
+  --divider: rgba(20, 20, 20, 0.16);
+  --divider-strong: rgba(20, 20, 20, 0.24);
+  --divider-dash: rgba(20, 20, 20, 0.2);
+
+  /* EXCAVLA — texto */
+  --text: #141414;
+  --text-2: #3a3a38;
+  --text-3: #6c6c68;
+  --text-4: #8a8a86;
+  --text-on-dark: #a3a39e;
+  --nav-inactive: #8f8f8a;
+
+  /* EXCAVLA — rampa de acento (amarillo industrial) */
+  --accent-100: #fff6d9;
+  --accent-200: #ffe89e;
+  --accent-300: #ffd85c;
+  --accent-400: #ffcb26;
+  --accent-500: #ffc20a;
+  --accent-600: #e0a800;
+  --accent-700: #a87c00;
+  --accent-800: #6e5100;
+  --accent-900: #3d2d00;
+  --accent-ink: #5c4400;
+
+  /* EXCAVLA — semántica de estado */
+  --status-working: #1c7a4b;
+  --status-working-bg: #e4f2ea;
+  --status-working-text: #0f5334;
+  --status-available: #ffc20a;
+  --status-available-bg: #fff6d9;
+  --status-available-text: #5c4400;
+  --status-available-border: #a87c00;
+  --status-maintenance: #b3341f;
+  --status-maintenance-bg: #fae7e3;
+  --status-maintenance-text: #8a2716;
+  --status-off: #d7d7d2;
+
+  /* shadcn — remapeado a la paleta EXCAVLA */
+  --background: var(--paper);
+  --foreground: var(--ink);
+  --card: var(--paper);
+  --card-foreground: var(--ink);
+  --popover: var(--paper);
+  --popover-foreground: var(--ink);
+  --primary: var(--accent-500);
+  --primary-foreground: var(--ink);
+  --secondary: var(--ink);
+  --secondary-foreground: var(--paper);
+  --muted: var(--surface);
+  --muted-foreground: var(--text-3);
+  --accent: var(--accent-100);
+  --accent-foreground: var(--accent-ink);
+  --destructive: var(--status-maintenance);
+  --destructive-foreground: var(--paper);
+  --border: var(--divider);
+  --input: var(--divider-strong);
+  --ring: var(--accent-500);
+  --radius: 0px;
 }
 
 @theme inline {
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-ink-line: var(--ink-line);
+  --color-ink-dim: var(--ink-dim);
+  --color-paper: var(--paper);
+  --color-surface: var(--surface);
+
+  --color-divider: var(--divider);
+  --color-divider-strong: var(--divider-strong);
+  --color-divider-dash: var(--divider-dash);
+
+  --color-text: var(--text);
+  --color-text-2: var(--text-2);
+  --color-text-3: var(--text-3);
+  --color-text-4: var(--text-4);
+  --color-text-on-dark: var(--text-on-dark);
+  --color-nav-inactive: var(--nav-inactive);
+
+  --color-accent-100: var(--accent-100);
+  --color-accent-200: var(--accent-200);
+  --color-accent-300: var(--accent-300);
+  --color-accent-400: var(--accent-400);
+  --color-accent-500: var(--accent-500);
+  --color-accent-600: var(--accent-600);
+  --color-accent-700: var(--accent-700);
+  --color-accent-800: var(--accent-800);
+  --color-accent-900: var(--accent-900);
+  --color-accent-ink: var(--accent-ink);
+
+  --color-status-working: var(--status-working);
+  --color-status-working-bg: var(--status-working-bg);
+  --color-status-working-text: var(--status-working-text);
+  --color-status-available: var(--status-available);
+  --color-status-available-bg: var(--status-available-bg);
+  --color-status-available-text: var(--status-available-text);
+  --color-status-available-border: var(--status-available-border);
+  --color-status-maintenance: var(--status-maintenance);
+  --color-status-maintenance-bg: var(--status-maintenance-bg);
+  --color-status-maintenance-text: var(--status-maintenance-text);
+  --color-status-off: var(--status-off);
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --color-brand-yellow: var(--brand-yellow);
-  --color-brand-yellow-dark: var(--brand-yellow-dark);
-  --color-brand-black: var(--brand-black);
-  --color-brand-gray: var(--brand-gray);
-  --color-brand-gray-light: var(--brand-gray-light);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --font-heading: "Barlow Condensed", "Barlow Condensed Fallback", ui-sans-serif,
+    system-ui, sans-serif;
+  --font-sans: "Barlow", "Barlow Fallback", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, monospace;
+
+  /* Firma del sistema: cero radios en todo */
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
+  --radius-2xl: 0px;
+  --radius-3xl: 0px;
+  --radius-4xl: 0px;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
+  :focus-visible {
+    outline: 2px solid var(--accent-500);
+    outline-offset: 2px;
+  }
+}
+
+@layer utilities {
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+  .hazard-tape {
+    background: repeating-linear-gradient(
+      135deg,
+      var(--accent-500) 0 8px,
+      var(--ink) 8px 16px
+    );
+  }
+  .doc-hatch {
+    background: repeating-linear-gradient(
+      135deg,
+      rgba(20, 20, 20, 0.08) 0 4px,
+      transparent 4px 9px
+    );
+  }
+  .egreso-hatch {
+    background: repeating-linear-gradient(
+      135deg,
+      var(--ink) 0 2px,
+      transparent 2px 5px
+    );
+  }
+
+  @keyframes ex-up {
+    from {
+      opacity: 0;
+      transform: translateY(14px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  @keyframes ex-fade {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  .animate-ex-up {
+    animation: ex-up 0.22s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .animate-ex-fade {
+    animation: ex-fade 0.15s ease-out;
+  }
 }

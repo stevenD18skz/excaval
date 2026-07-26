@@ -1,365 +1,429 @@
-import { SupabaseStatus } from "@/components/supabase-status";
+import Link from "next/link";
+import {
+  AlertTriangle,
+  ChevronRight,
+  TrendingDown,
+  TrendingUp,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Blueprint } from "@/components/excavla/blueprint";
+import { Plate } from "@/components/excavla/plate";
+import { Money } from "@/components/excavla/money";
+import { SectionLabel } from "@/components/excavla/section-label";
+import { StatCard } from "@/components/excavla/stat-card";
+import { TrafficLight } from "@/components/excavla/traffic-light";
+import { BalanceChart } from "@/components/excavla/balance-chart";
+import { ExpenseBreakdown } from "@/components/excavla/expense-breakdown";
+import { MobileHeader } from "@/components/excavla/mobile-header";
+import { DesktopTopbar } from "@/components/excavla/desktop-topbar";
+import {
+  StatusBadge,
+  machineStatusLabel,
+  machineStatusTone,
+} from "@/components/excavla/status-badge";
+import {
+  clients,
+  expenses,
+  invoices,
+  machines,
+} from "@/lib/excavla/seed-data";
+import {
+  computeAggregates,
+  expenseBreakdown,
+  fleetCounts,
+} from "@/lib/excavla/aggregates";
+import { EXPENSE_CAT_META } from "@/lib/excavla/types";
+import type { MachineStatus } from "@/lib/excavla/types";
+import { formatMoney } from "@/lib/excavla/money";
+import { cn } from "@/lib/utils";
 
-const modules = [
-  {
-    title: "Dashboard financiero",
-    description:
-      "Resumen mensual de ingresos, egresos y ganancia neta, con visualización gráfica de balances para decidir rápido.",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" className="h-6 w-6">
-        <path
-          d="M4 19V10M12 19V5M20 19v-7"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
-    ),
-  },
-  {
-    title: "Libro de Cuentas Digital",
-    description:
-      'Registro de ingresos con estado "Pagado" o "Por Cobrar" y seguimiento automático de facturas pendientes.',
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" className="h-6 w-6">
-        <path
-          d="M5 4.5C5 3.67 5.67 3 6.5 3H17a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6.5A1.5 1.5 0 0 1 5 19.5v-15Z"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinejoin="round"
-        />
-        <path
-          d="M9 8h6M9 12h6M9 16h3"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-        />
-      </svg>
-    ),
-  },
-  {
-    title: "Control de Salidas y Sueldos",
-    description:
-      "Gastos categorizados (repuestos, reparaciones, gasolina, punto) y pagos a operarios, en modo transaccional para evitar descuadres.",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" className="h-6 w-6">
-        <path
-          d="M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z"
-          stroke="currentColor"
-          strokeWidth="2"
-        />
-        <path
-          d="M3 10h18"
-          stroke="currentColor"
-          strokeWidth="2"
-        />
-        <circle cx="7" cy="14.5" r="1" fill="currentColor" />
-      </svg>
-    ),
-  },
-  {
-    title: "Semáforo de la Máquina",
-    description:
-      "Estado del activo en tiempo real (Trabajando, Disponible, Mantenimiento) con ubicación y cliente o proyecto asignado.",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" className="h-6 w-6">
-        <rect
-          x="8"
-          y="2"
-          width="8"
-          height="20"
-          rx="4"
-          stroke="currentColor"
-          strokeWidth="2"
-        />
-        <circle cx="12" cy="7" r="1.4" fill="currentColor" />
-        <circle cx="12" cy="12" r="1.4" fill="currentColor" />
-        <circle cx="12" cy="17" r="1.4" fill="currentColor" />
-      </svg>
-    ),
-  },
-  {
-    title: "Gestión Documental y CRM",
-    description:
-      "Archivo de papeles: fotos de facturas y recibos asociadas a cada transacción, más un directorio de clientes con buscador global.",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" className="h-6 w-6">
-        <path
-          d="M3 7.5A1.5 1.5 0 0 1 4.5 6H9l2 2h8.5A1.5 1.5 0 0 1 21 9.5v9A1.5 1.5 0 0 1 19.5 20h-15A1.5 1.5 0 0 1 3 18.5v-11Z"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinejoin="round"
-        />
-      </svg>
-    ),
-  },
-];
+const STATUS_BORDER_VAR: Record<MachineStatus, string> = {
+  WORKING: "var(--status-working)",
+  AVAILABLE: "var(--status-available)",
+  MAINTENANCE: "var(--status-maintenance)",
+};
 
-const pillars = [
-  {
-    title: "Cero curva de aprendizaje",
-    description:
-      "Formularios guiados paso a paso y tarjetas interactivas en lugar de tablas densas: cualquier directivo lo usa desde el primer día.",
-  },
-  {
-    title: "Mobile-first, de verdad",
-    description:
-      "Pensado para consultarse desde el campo de obra: responsividad absoluta en cualquier pantalla, sin perder funciones.",
-  },
-  {
-    title: "Datos íntegros y validados",
-    description:
-      "Validación en cliente y servidor, transacciones seguras y PostgreSQL con integridad referencial estricta para tus números.",
-  },
-];
+const STATUS_TINT_VAR: Record<MachineStatus, string> = {
+  WORKING: "var(--status-working-bg)",
+  AVAILABLE: "var(--status-available-bg)",
+  MAINTENANCE: "var(--status-maintenance-bg)",
+};
 
-const stack = [
-  "Next.js",
-  "Tailwind CSS",
-  "Supabase Postgres",
-  "Supabase Storage",
-  "Supabase Auth",
-];
+const FLEET_STATUS_ORDER: MachineStatus[] = ["WORKING", "AVAILABLE", "MAINTENANCE"];
 
-export default function Home() {
+function dayOf(dateStr: string): number {
+  return parseInt(dateStr, 10) || 0;
+}
+
+function clientName(clientId: string): string {
+  return clients.find((c) => c.id === clientId)?.name ?? clientId;
+}
+
+export default function DashboardPage() {
+  const agg = computeAggregates(invoices, expenses);
+  const breakdown = expenseBreakdown(expenses);
+  const fleet = fleetCounts(machines);
+
+  const pendingInvoices = invoices.filter((i) => i.status === "PENDING");
+  const pendingCount = pendingInvoices.length;
+
+  const currentMonth = agg.chart[agg.chart.length - 1];
+  const prevMonth = agg.chart[agg.chart.length - 2];
+  const currentNetaM = currentMonth.ingresos - currentMonth.egresos;
+  const prevNetaM = prevMonth.ingresos - prevMonth.egresos;
+  const deltaPct = prevNetaM !== 0 ? ((currentNetaM - prevNetaM) / Math.abs(prevNetaM)) * 100 : 0;
+  const deltaLabel = `${deltaPct >= 0 ? "+" : "−"}${Math.abs(deltaPct)
+    .toFixed(1)
+    .replace(".", ",")}% vs junio`;
+
+  const movements = [
+    ...invoices.map((inv) => ({
+      kind: "income" as const,
+      id: inv.id,
+      title: clientName(inv.clientId),
+      sub: `Ingreso · ${inv.date.replace(" 2026", "")}`,
+      amount: inv.amount,
+      day: dayOf(inv.date),
+      href: `/cuentas?factura=${inv.id}`,
+    })),
+    ...expenses.map((exp) => ({
+      kind: "expense" as const,
+      id: exp.id,
+      title: exp.desc,
+      sub: `${EXPENSE_CAT_META[exp.cat].label} · ${exp.date}`,
+      amount: exp.amount,
+      day: dayOf(exp.date),
+      cat: exp.cat,
+      href: `/salidas?cat=${exp.cat}`,
+    })),
+  ]
+    .sort((a, b) => b.day - a.day)
+    .slice(0, 4);
+
   return (
-    <div className="flex flex-1 flex-col bg-white font-sans text-brand-black">
-      <SupabaseStatus />
-      {/* Nav */}
-      <header className="sticky top-0 z-20 border-b border-black/5 bg-white/90 backdrop-blur">
-        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
-          <div className="flex items-center gap-2">
-            <span className="h-3 w-3 rounded-sm bg-brand-yellow" />
-            <span className="text-lg font-bold tracking-tight">EXCAVLA</span>
-          </div>
-          <nav className="hidden items-center gap-8 text-sm font-medium text-brand-gray sm:flex">
-            <a href="#modulos" className="hover:text-brand-black">
-              Módulos
-            </a>
-            <a href="#por-que" className="hover:text-brand-black">
-              Por qué Excavla
-            </a>
-            <a href="#stack" className="hover:text-brand-black">
-              Tecnología
-            </a>
-          </nav>
-          <a
-            href="#"
-            className="rounded-md bg-brand-black px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-black/80"
-          >
-            Iniciar sesión
-          </a>
-        </div>
-      </header>
+    <>
+      {/* ---------- MÓVIL ---------- */}
+      <div className="lg:hidden">
+        <MobileHeader title="Resumen" meta="JULIO 2026" />
 
-      <main className="flex-1">
-        {/* Hero */}
-        <section className="relative overflow-hidden bg-brand-black text-white">
-          <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-1/3 [background:repeating-linear-gradient(135deg,var(--brand-yellow)_0,var(--brand-yellow)_18px,transparent_18px,transparent_36px)] opacity-90 lg:block" />
-          <div className="mx-auto grid max-w-6xl gap-12 px-6 py-24 lg:grid-cols-2 lg:items-center lg:py-32">
-            <div>
-              <span className="inline-flex items-center rounded-full bg-brand-yellow px-3 py-1 text-xs font-bold uppercase tracking-wide text-brand-black">
-                Gestión administrativa y operativa
+        <main className="flex flex-col gap-4 px-3.5 pt-4 pb-[110px]">
+          {/* Hero: Ganancia neta */}
+          <Blueprint tone="dark" className="bg-ink p-4 pb-3.5 text-paper">
+            <div className="flex items-center gap-2">
+              <span className="font-heading text-[11px] font-semibold tracking-[.16em] text-accent-500 uppercase">
+                Ganancia neta · Libre
               </span>
-              <h1 className="mt-6 text-4xl font-bold leading-tight tracking-tight sm:text-5xl">
-                Controla el dinero, los papeles y las máquinas de tu empresa
-                desde un solo lugar.
-              </h1>
-              <p className="mt-6 max-w-xl text-lg leading-8 text-white/70">
-                Excavla centraliza el flujo de caja, la gestión documental y
-                el estado de tu maquinaria pesada en una plataforma de
-                extrema simplicidad, pensada para que la gerencia decida sin
-                perder tiempo.
-              </p>
-              <div className="mt-10 flex flex-col gap-4 sm:flex-row">
-                <a
-                  href="#modulos"
-                  className="rounded-md bg-brand-yellow px-6 py-3 text-center text-sm font-bold text-brand-black transition-colors hover:bg-brand-yellow-dark"
-                >
-                  Ver los módulos
-                </a>
-                <a
-                  href="#por-que"
-                  className="rounded-md border border-white/20 px-6 py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-white/10"
-                >
-                  Cómo funciona
-                </a>
-              </div>
+              <span className="h-px flex-1 bg-ink-line" />
             </div>
-
-            {/* Dashboard mock card */}
-            <div className="relative rounded-xl border border-white/10 bg-white p-6 text-brand-black shadow-2xl">
-              <p className="text-xs font-semibold uppercase tracking-wide text-brand-gray">
-                Resumen del mes
-              </p>
-              <div className="mt-4 grid grid-cols-3 gap-3">
-                <div className="rounded-lg bg-brand-gray-light p-3">
-                  <p className="text-xs text-brand-gray">Ingresos</p>
-                  <p className="mt-1 text-lg font-bold">$48.2M</p>
-                </div>
-                <div className="rounded-lg bg-brand-gray-light p-3">
-                  <p className="text-xs text-brand-gray">Egresos</p>
-                  <p className="mt-1 text-lg font-bold">$31.4M</p>
-                </div>
-                <div className="rounded-lg bg-brand-yellow p-3">
-                  <p className="text-xs font-medium text-brand-black/70">
-                    Ganancia
-                  </p>
-                  <p className="mt-1 text-lg font-bold">$16.8M</p>
-                </div>
-              </div>
-              <div className="mt-6 space-y-3">
-                <div className="flex items-center justify-between rounded-lg border border-black/5 px-4 py-3">
-                  <div>
-                    <p className="text-sm font-semibold">Excavadora CAT-320</p>
-                    <p className="text-xs text-brand-gray">
-                      Proyecto Vía Norte
-                    </p>
-                  </div>
-                  <span className="rounded-full bg-brand-yellow/20 px-3 py-1 text-xs font-bold text-brand-yellow-dark">
-                    Trabajando
-                  </span>
-                </div>
-                <div className="flex items-center justify-between rounded-lg border border-black/5 px-4 py-3">
-                  <div>
-                    <p className="text-sm font-semibold">
-                      Factura #0234 · Constructora Rivas
-                    </p>
-                    <p className="text-xs text-brand-gray">Vence en 5 días</p>
-                  </div>
-                  <span className="rounded-full bg-brand-black/5 px-3 py-1 text-xs font-bold text-brand-black">
-                    Por cobrar
-                  </span>
-                </div>
-              </div>
+            <div className="tabular font-heading mt-1 text-[46px] leading-[1.02] font-semibold">
+              <Money value={agg.neta} className="text-paper" />
             </div>
-          </div>
-        </section>
-
-        {/* Trust bar */}
-        <section className="border-b border-black/5 bg-brand-gray-light">
-          <div className="mx-auto grid max-w-6xl grid-cols-2 gap-6 px-6 py-8 text-center sm:grid-cols-4">
-            {[
-              ["1", "tipo de usuario, sin roles que confundan"],
-              ["100%", "responsive, mobile-first"],
-              ["Transaccional", "sin descuadres financieros"],
-              ["Postgres", "con integridad referencial estricta"],
-            ].map(([stat, label]) => (
-              <div key={stat}>
-                <p className="text-xl font-bold text-brand-black">{stat}</p>
-                <p className="mt-1 text-xs text-brand-gray">{label}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Modules / Features */}
-        <section id="modulos" className="mx-auto max-w-6xl px-6 py-24">
-          <div className="max-w-2xl">
-            <span className="text-sm font-bold uppercase tracking-wide text-brand-yellow-dark">
-              Módulos
-            </span>
-            <h2 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
-              Todo lo que Gerencia necesita para operar, en un solo tablero.
-            </h2>
-            <p className="mt-4 text-lg text-brand-gray">
-              Cada módulo responde a una necesidad concreta del negocio: qué
-              entra, qué sale, dónde está cada máquina y dónde quedó cada
-              papel.
-            </p>
-          </div>
-
-          <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {modules.map((m) => (
-              <div
-                key={m.title}
-                className="group rounded-xl border border-black/5 bg-white p-6 shadow-sm transition-shadow hover:shadow-md"
-              >
-                <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-brand-black text-brand-yellow transition-colors group-hover:bg-brand-yellow group-hover:text-brand-black">
-                  {m.icon}
-                </div>
-                <h3 className="mt-5 text-lg font-bold">{m.title}</h3>
-                <p className="mt-2 text-sm leading-6 text-brand-gray">
-                  {m.description}
-                </p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Why Excavla */}
-        <section id="por-que" className="bg-brand-black py-24 text-white">
-          <div className="mx-auto max-w-6xl px-6">
-            <div className="max-w-2xl">
-              <span className="text-sm font-bold uppercase tracking-wide text-brand-yellow">
-                Por qué Excavla
+            <div className="mt-2 flex items-center gap-2">
+              <span className="bg-accent-500 px-[7px] py-[2px] font-heading text-xs font-semibold text-ink">
+                {deltaLabel}
               </span>
-              <h2 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
-                Simplicidad de extremo a extremo, no otro sistema complejo.
-              </h2>
+              <span className="text-xs text-text-on-dark">
+                margen {agg.margen}% · vs junio
+              </span>
             </div>
-            <div className="mt-14 grid gap-8 sm:grid-cols-3">
-              {pillars.map((p, i) => (
-                <div key={p.title} className="border-t-2 border-brand-yellow pt-6">
-                  <span className="text-sm font-bold text-brand-yellow">
-                    0{i + 1}
-                  </span>
-                  <h3 className="mt-3 text-xl font-bold">{p.title}</h3>
-                  <p className="mt-3 text-sm leading-6 text-white/70">
-                    {p.description}
-                  </p>
-                </div>
+          </Blueprint>
+
+          {/* KPIs ingresos / egresos */}
+          <div className="grid grid-cols-2 gap-2.5">
+            <div className="border border-divider p-[11px_12px]">
+              <div className="flex items-center gap-1.5 font-heading text-[10px] font-semibold tracking-[.14em] text-status-working uppercase">
+                <TrendingUp className="h-[13px] w-[13px]" strokeWidth={1.6} />
+                Ingresos
+              </div>
+              <div className="tabular font-heading mt-1.5 text-2xl font-semibold text-ink">
+                <Money value={agg.ingresos} />
+              </div>
+              <div className="mt-1 text-[11px] text-text-3">
+                {invoices.length} facturas emitidas
+              </div>
+            </div>
+            <div className="border border-divider p-[11px_12px]">
+              <div className="flex items-center gap-1.5 font-heading text-[10px] font-semibold tracking-[.14em] text-status-maintenance uppercase">
+                <TrendingDown className="h-[13px] w-[13px]" strokeWidth={1.6} />
+                Egresos
+              </div>
+              <div className="tabular font-heading mt-1.5 text-2xl font-semibold text-ink">
+                <Money value={agg.egresos} />
+              </div>
+              <div className="mt-1 text-[11px] text-text-3">
+                {expenses.length} salidas registradas
+              </div>
+            </div>
+          </div>
+
+          {/* Alerta de cobro */}
+          {pendingCount > 0 ? (
+            <Link
+              href="/cuentas?filter=pendientes"
+              className="flex items-center gap-3 border border-ink border-l-[6px] border-l-accent-500 bg-accent-100 p-3"
+            >
+              <span className="flex h-[34px] w-[34px] shrink-0 items-center justify-center bg-ink">
+                <AlertTriangle className="h-[19px] w-[19px] text-accent-500" strokeWidth={1.6} />
+              </span>
+              <span className="flex-1">
+                <span className="block font-heading text-[17px] font-semibold text-ink">
+                  {pendingCount} facturas por cobrar
+                </span>
+                <span className="tabular mt-0.5 block text-xs text-accent-ink">
+                  {formatMoney(agg.porCobrar)} · {agg.vencidas} vencida
+                  {agg.vencidas === 1 ? "" : "s"}
+                </span>
+              </span>
+              <ChevronRight className="h-[18px] w-[18px] shrink-0 text-ink" strokeWidth={1.6} />
+            </Link>
+          ) : null}
+
+          {/* Gráfico de balance */}
+          <Blueprint className="border border-divider p-[14px_12px_12px]">
+            <BalanceChart months={agg.chart} height={126} gap={9} />
+          </Blueprint>
+
+          {/* Desglose de egresos */}
+          <div className="border border-divider p-[13px_12px]">
+            <SectionLabel>A dónde se fue el dinero</SectionLabel>
+            <ExpenseBreakdown items={breakdown} barHeight={9} className="mt-3" />
+          </div>
+
+          {/* Semáforo de la flota */}
+          <section>
+            <SectionLabel
+              trailing={
+                <Link
+                  href="/maquinas"
+                  className="font-heading text-xs font-semibold tracking-[.08em] text-accent-700 uppercase"
+                >
+                  Ver flota
+                </Link>
+              }
+            >
+              Semáforo de la flota
+            </SectionLabel>
+            <div className="mt-3 grid grid-cols-3 gap-2.5">
+              {FLEET_STATUS_ORDER.map((status) => (
+                <Link
+                  key={status}
+                  href={`/maquinas?mfilter=${status}`}
+                  className="border-t-4 p-[10px_9px_9px]"
+                  style={{ borderTopColor: STATUS_BORDER_VAR[status] }}
+                >
+                  <span
+                    className="inline-block h-[9px] w-[9px] rounded-full"
+                    style={{
+                      backgroundColor: STATUS_BORDER_VAR[status],
+                      boxShadow: `0 0 0 2px ${STATUS_TINT_VAR[status]}`,
+                    }}
+                  />
+                  <div className="tabular font-heading mt-1.5 text-[22px] font-semibold text-ink">
+                    {fleet[status]}
+                  </div>
+                  <div className="font-heading text-[10.5px] font-semibold text-text-3 uppercase">
+                    {machineStatusLabel(status)}
+                  </div>
+                </Link>
               ))}
             </div>
-          </div>
-        </section>
+          </section>
 
-        {/* Stack */}
-        <section id="stack" className="mx-auto max-w-6xl px-6 py-20">
-          <p className="text-center text-sm font-bold uppercase tracking-wide text-brand-gray">
-            Construido con tecnología moderna
-          </p>
-          <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-            {stack.map((s) => (
-              <span
-                key={s}
-                className="rounded-full border border-black/10 bg-brand-gray-light px-4 py-2 text-sm font-semibold text-brand-black"
+          {/* Últimos movimientos */}
+          <section>
+            <SectionLabel>Últimos movimientos</SectionLabel>
+            <div className="mt-3 flex flex-col gap-2">
+              {movements.map((m) => (
+                <Link
+                  key={m.id}
+                  href={m.href}
+                  className="flex items-center gap-3 border border-divider p-2.5"
+                >
+                  <Plate variant={m.kind === "income" ? "accent" : "dark"} className="h-8 w-[38px]">
+                    {m.kind === "income" ? "FAC" : EXPENSE_CAT_META[m.cat].code}
+                  </Plate>
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate font-heading text-[15.5px] font-semibold text-ink">
+                      {m.title}
+                    </span>
+                    <span className="block truncate text-[11px] text-text-3">{m.sub}</span>
+                  </span>
+                  <span
+                    className={cn(
+                      "tabular font-heading shrink-0 text-[15px] font-semibold",
+                      m.kind === "income" ? "text-status-working-text" : "text-ink"
+                    )}
+                  >
+                    <Money value={m.amount} sign={m.kind === "expense" ? "negative" : "none"} />
+                  </span>
+                </Link>
+              ))}
+            </div>
+          </section>
+        </main>
+      </div>
+
+      {/* ---------- ESCRITORIO ---------- */}
+      <div className="hidden lg:flex lg:flex-1 lg:flex-col">
+        <DesktopTopbar title="Dashboard · julio 2026" />
+
+        <main className="flex-1 overflow-y-auto px-[22px] py-[18px] pb-[26px]">
+          <div className="flex flex-col gap-4">
+            {/* Fila de KPIs */}
+            <div className="grid grid-cols-[1.25fr_1fr_1fr] gap-3.5">
+              <Blueprint tone="dark" className="bg-ink p-4 text-paper">
+                <div className="flex items-center gap-2">
+                  <span className="font-heading text-[11px] font-semibold tracking-[.16em] text-accent-500 uppercase">
+                    Ganancia neta · Libre
+                  </span>
+                  <span className="h-px flex-1 bg-ink-line" />
+                </div>
+                <div className="tabular font-heading mt-1 text-[44px] leading-[1.05] font-semibold">
+                  <Money value={agg.neta} className="text-paper" />
+                </div>
+                <div className="mt-2 flex items-center gap-2">
+                  <span className="bg-accent-500 px-[7px] py-[2px] font-heading text-xs font-semibold text-ink">
+                    {deltaLabel}
+                  </span>
+                  <span className="text-xs text-text-on-dark">
+                    margen {agg.margen}% · vs junio
+                  </span>
+                </div>
+              </Blueprint>
+
+              <StatCard
+                label="Ingresos del mes"
+                labelClassName="text-status-working"
+                value={<Money value={agg.ingresos} />}
+                sub={`${invoices.length} facturas · ${pendingCount} por cobrar`}
+              />
+              <StatCard
+                label="Egresos del mes"
+                labelClassName="text-status-maintenance"
+                value={<Money value={agg.egresos} />}
+                sub={`Nómina ${formatMoney(agg.nomina)} · ${expenses.length} salidas`}
+              />
+            </div>
+
+            {/* Fila de gráficos */}
+            <div className="grid grid-cols-[1.6fr_1fr] gap-3.5">
+              <Blueprint className="border border-divider p-4">
+                <BalanceChart months={agg.chart} height={186} gap={16} showNetDelta />
+              </Blueprint>
+              <div className="border border-divider p-4">
+                <SectionLabel>A dónde se fue el dinero</SectionLabel>
+                <ExpenseBreakdown items={breakdown} barHeight={10} className="mt-3" />
+              </div>
+            </div>
+
+            {/* Semáforo de la flota */}
+            <section>
+              <SectionLabel
+                trailing={
+                  <span className="text-[11px] text-text-3">
+                    {fleet.WORKING} trabajando · {fleet.AVAILABLE} disponibles · {fleet.MAINTENANCE} en mantenimiento
+                  </span>
+                }
               >
-                {s}
-              </span>
-            ))}
-          </div>
-        </section>
+                Semáforo de la flota
+              </SectionLabel>
+              <div className="mt-3 grid grid-cols-4 gap-3">
+                {machines.map((m) => (
+                  <Link
+                    key={m.code}
+                    href={`/maquinas?mfilter=${m.status}`}
+                    className="flex gap-2.5 border-t-4 p-3"
+                    style={{ borderTopColor: STATUS_BORDER_VAR[m.status] }}
+                  >
+                    <TrafficLight status={m.status} dotSize={10} variant="light" />
+                    <span className="min-w-0 flex-1">
+                      <span className="flex items-center gap-1.5">
+                        <Plate variant="dark" className="h-[18px] px-1 text-[10px]">
+                          {m.code}
+                        </Plate>
+                        <StatusBadge tone={machineStatusTone(m.status)} className="text-[10px]">
+                          {machineStatusLabel(m.status)}
+                        </StatusBadge>
+                      </span>
+                      <span className="mt-1 block truncate font-heading text-[13.5px] font-semibold text-ink">
+                        {m.name}
+                      </span>
+                      <span className="block truncate text-[11px] text-text-3">
+                        {m.location}
+                      </span>
+                    </span>
+                  </Link>
+                ))}
+              </div>
+            </section>
 
-        {/* Final CTA */}
-        <section className="mx-auto max-w-6xl px-6 pb-24">
-          <div className="flex flex-col items-center gap-6 rounded-2xl bg-brand-yellow px-8 py-14 text-center">
-            <h2 className="max-w-xl text-3xl font-bold tracking-tight text-brand-black sm:text-4xl">
-              Empieza a llevar el control de tu operación hoy.
-            </h2>
-            <p className="max-w-lg text-brand-black/70">
-              Dinero, papeles y máquinas, siempre visibles, siempre al día.
-            </p>
-            <a
-              href="#"
-              className="rounded-md bg-brand-black px-6 py-3 text-sm font-bold text-white transition-colors hover:bg-black/80"
-            >
-              Solicitar acceso
-            </a>
+            {/* Facturas por cobrar */}
+            <section className="border border-divider">
+              <div className="flex items-center justify-between border-b border-divider p-3.5">
+                <SectionLabel className="flex-1">Facturas por cobrar</SectionLabel>
+                <span className="tabular ml-3 shrink-0 font-heading text-sm font-semibold text-ink">
+                  {formatMoney(agg.porCobrar)} en la calle
+                </span>
+              </div>
+              {pendingInvoices.length > 0 ? (
+                <div className="flex flex-col">
+                  {pendingInvoices.map((inv) => (
+                    <div
+                      key={inv.id}
+                      className="flex items-center gap-4 border-b border-divider p-[13px_15px] last:border-b-0"
+                      style={{
+                        borderLeft: `5px solid ${
+                          inv.overdue
+                            ? "var(--status-maintenance)"
+                            : "var(--status-available)"
+                        }`,
+                      }}
+                    >
+                      <Plate variant="dark" className="h-8 shrink-0 px-1.5">
+                        {inv.id}
+                      </Plate>
+                      <span className="min-w-0 flex-1">
+                        <span className="block font-heading text-[17px] font-semibold text-ink">
+                          {clientName(inv.clientId)}
+                        </span>
+                        <span className="block truncate text-[12.5px] text-text-2">
+                          {inv.concept}
+                        </span>
+                      </span>
+                      <span
+                        className={cn(
+                          "w-[120px] shrink-0 text-right text-[12.5px]",
+                          inv.overdue ? "text-status-maintenance" : "text-text-3"
+                        )}
+                      >
+                        {inv.due}
+                      </span>
+                      <span className="tabular font-heading w-[140px] shrink-0 text-right text-xl font-semibold text-ink">
+                        <Money value={inv.amount} />
+                      </span>
+                      <Button
+                        render={
+                          <Link href={`/cuentas?filter=pendientes&factura=${inv.id}`} />
+                        }
+                        className="min-h-10 shrink-0"
+                      >
+                        Marcar cobrada
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="m-3.5 border border-dashed border-[rgba(20,20,20,.3)] p-6 text-center">
+                  <p className="font-heading text-sm font-semibold text-ink">Todo cobrado</p>
+                  <p className="mt-1 text-[12.5px] text-text-3">
+                    No hay facturas pendientes este mes.
+                  </p>
+                </div>
+              )}
+            </section>
           </div>
-        </section>
-      </main>
-
-      <footer className="border-t border-black/5 py-8">
-        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-6 text-sm text-brand-gray sm:flex-row">
-          <div className="flex items-center gap-2">
-            <span className="h-2.5 w-2.5 rounded-sm bg-brand-yellow" />
-            <span className="font-bold text-brand-black">EXCAVLA</span>
-          </div>
-          <p>Sistema de Gestión Administrativa y Operativa para maquinaria pesada.</p>
-        </div>
-      </footer>
-    </div>
+        </main>
+      </div>
+    </>
   );
 }

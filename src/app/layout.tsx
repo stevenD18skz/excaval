@@ -1,15 +1,20 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Barlow, Barlow_Condensed } from "next/font/google";
+import { Toaster } from "@/components/ui/sonner";
+import { Sidebar } from "@/components/excavla/sidebar";
+import { BottomNav } from "@/components/excavla/bottom-nav";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const barlow = Barlow({
+  variable: "--font-barlow",
   subsets: ["latin"],
+  weight: ["400"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const barlowCondensed = Barlow_Condensed({
+  variable: "--font-barlow-condensed",
   subsets: ["latin"],
+  weight: ["600"],
 });
 
 export const metadata: Metadata = {
@@ -25,10 +30,17 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      lang="es"
+      className={`${barlow.variable} ${barlowCondensed.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col bg-paper text-text lg:flex-row">
+        <Sidebar className="hidden lg:flex" />
+        <div className="flex min-h-full flex-1 flex-col lg:h-screen lg:overflow-y-auto">
+          {children}
+        </div>
+        <BottomNav className="lg:hidden" />
+        <Toaster />
+      </body>
     </html>
   );
 }
