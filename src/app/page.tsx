@@ -1,3 +1,5 @@
+import { SupabaseStatus } from "@/components/supabase-status";
+
 const modules = [
   {
     title: "Dashboard financiero",
@@ -123,6 +125,7 @@ const stack = [
 export default function Home() {
   return (
     <div className="flex flex-1 flex-col bg-white font-sans text-brand-black">
+      <SupabaseStatus />
       {/* Nav */}
       <header className="sticky top-0 z-20 border-b border-black/5 bg-white/90 backdrop-blur">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
