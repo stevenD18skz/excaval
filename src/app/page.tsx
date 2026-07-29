@@ -64,9 +64,17 @@ export default function LandingPage() {
               Gerencia · Rionegro
             </span>
           </div>
-          <Button render={<Link href="/dashboard" />} nativeButton={false} className="min-h-10">
-            Probar la simulación
-          </Button>
+          <div className="flex items-center gap-4">
+            <Link
+              href="/publico"
+              className="hidden font-heading text-xs font-semibold tracking-[.08em] text-text-on-dark uppercase hover:text-accent-500 sm:block"
+            >
+              Ver sitio público
+            </Link>
+            <Button render={<Link href="/dashboard" />} nativeButton={false} className="min-h-10">
+              Probar la simulación
+            </Button>
+          </div>
         </div>
       </header>
       <HazardTape />

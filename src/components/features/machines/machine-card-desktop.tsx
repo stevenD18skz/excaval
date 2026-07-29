@@ -1,4 +1,5 @@
-import { Home, MapPin } from "lucide-react";
+import Link from "next/link";
+import { BarChart3, Home, MapPin } from "lucide-react";
 import type { Machine, MachineStatus } from "@/lib/excaval/types";
 import { Blueprint } from "@/components/shared/blueprint";
 import { Plate } from "@/components/shared/plate";
@@ -19,6 +20,8 @@ const BORDER_VAR: Record<MachineStatus, string> = {
 
 interface MachineCardDesktopProps {
   machine: Machine;
+  /** Abre el detalle (Semáforo / Rendimiento) en un Dialog. */
+  href: string;
   onChangeStatus: (code: string, status: MachineStatus) => void;
   onUploadPhoto: (code: string, photo: string) => void;
   priority?: boolean;
@@ -27,6 +30,7 @@ interface MachineCardDesktopProps {
 /** Tarjeta de máquina de escritorio — el estado se cambia inline, sin abrir nada. */
 export function MachineCardDesktop({
   machine,
+  href,
   onChangeStatus,
   onUploadPhoto,
   priority = false,
@@ -83,7 +87,16 @@ export function MachineCardDesktop({
           className="mt-3"
         />
 
-        <p className="mt-2 text-[11px] text-text-4">{machine.updated}</p>
+        <div className="mt-2 flex items-center justify-between gap-2">
+          <p className="text-[11px] text-text-4">{machine.updated}</p>
+          <Link
+            href={href}
+            className="flex shrink-0 items-center gap-1 font-heading text-[11px] font-semibold tracking-[.06em] text-accent-700 uppercase hover:underline"
+          >
+            <BarChart3 className="h-3 w-3" strokeWidth={1.8} />
+            Rendimiento
+          </Link>
+        </div>
       </div>
     </div>
   );

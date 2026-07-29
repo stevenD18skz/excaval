@@ -1,16 +1,21 @@
 "use client";
 
+import Link from "next/link";
+import { Calculator } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { MobileHeader } from "@/components/layout/mobile-header";
 import { DesktopTopbar } from "@/components/layout/desktop-topbar";
+import { Button } from "@/components/ui/button";
 import { MachineCard } from "@/components/features/machines/machine-card";
 import { MachineCardDesktop } from "@/components/features/machines/machine-card-desktop";
 import { MachineDetailOverlay } from "@/components/features/machines/machine-detail-overlay";
+import { MaintenanceFormOverlay } from "@/components/features/machines/maintenance-form";
 import { showActionToast } from "@/components/layout/action-toast";
-import { useExcavalStore } from "@/lib/excaval/store";
+import { useExcavalStore, type NewMaintenanceInput } from "@/lib/excaval/store";
 import { fleetCounts } from "@/lib/excaval/aggregates";
 import { machineStatusLabel } from "@/components/shared/status-badge";
 import type { MachineStatus } from "@/lib/excaval/types";
+import { formatMoney } from "@/lib/excaval/money";
 import { cn } from "@/lib/utils";
 
 type MachineFilter = "todas" | MachineStatus;
@@ -42,10 +47,15 @@ export function MaquinasView() {
 
   const mfilter = ((searchParams.get("mfilter") as MachineFilter) || "todas") as MachineFilter;
   const selectedCode = searchParams.get("maquina");
+  const maintenanceCode = searchParams.get("mantenimiento");
 
   const machines = useExcavalStore((s) => s.machines);
+  const invoices = useExcavalStore((s) => s.invoices);
+  const expenses = useExcavalStore((s) => s.expenses);
+  const maintenanceRecords = useExcavalStore((s) => s.maintenanceRecords);
   const setMachineStatus = useExcavalStore((s) => s.setMachineStatus);
   const setMachinePhoto = useExcavalStore((s) => s.setMachinePhoto);
+  const addMaintenanceRecord = useExcavalStore((s) => s.addMaintenanceRecord);
 
   function setParams(mutate: (params: URLSearchParams) => void) {
     const params = new URLSearchParams(searchParams.toString());
@@ -70,7 +80,20 @@ export function MaquinasView() {
     setParams((params) => params.delete("maquina"));
   }
 
+  function closeMaintenanceForm() {
+    setParams((params) => params.delete("mantenimiento"));
+  }
+
   function handleChangeStatus(code: string, status: MachineStatus) {
+    const current = machines.find((m) => m.code === code);
+    if (status === "MAINTENANCE" && current?.status !== "MAINTENANCE") {
+      // Enviar a mantenimiento pide motivo/días/costo antes de cambiar el semáforo.
+      setParams((params) => {
+        params.delete("maquina");
+        params.set("mantenimiento", code);
+      });
+      return;
+    }
     setMachineStatus(code, status);
     showActionToast(`${code} → ${machineStatusLabel(status)}. Semáforo actualizado.`);
   }
@@ -80,12 +103,24 @@ export function MaquinasView() {
     showActionToast(`${code} → foto actualizada.`);
   }
 
+  function handleStartMaintenance(input: NewMaintenanceInput) {
+    addMaintenanceRecord(input);
+    closeMaintenanceForm();
+    showActionToast(
+      `${input.machineCode} → Mantenimiento. ${input.estimatedDays} días est.` +
+        (input.cost > 0 ? ` · ${formatMoney(input.cost)} registrado en Salidas.` : "")
+    );
+  }
+
   const filtered =
     mfilter === "todas" ? machines : machines.filter((m) => m.status === mfilter);
 
   const fleet = fleetCounts(machines);
   const selectedMachine = selectedCode
     ? machines.find((m) => m.code === selectedCode) ?? null
+    : null;
+  const maintenanceMachine = maintenanceCode
+    ? machines.find((m) => m.code === maintenanceCode) ?? null
     : null;
 
   return (
@@ -94,7 +129,7 @@ export function MaquinasView() {
       <div className="lg:hidden">
         <MobileHeader title="Semáforo de flota" meta={`${machines.length} ACTIVOS`} />
 
-        <main className="flex flex-col gap-4 px-3.5 pt-4 pb-[110px]">
+        <main className="flex flex-col gap-4 px-3.5 pt-4 pb-[130px]">
           <div className="-mx-3.5 flex gap-1.5 overflow-x-auto px-3.5">
             {FILTER_ORDER.map((f) => {
               const active = f === mfilter;
@@ -147,15 +182,17 @@ export function MaquinasView() {
           </div>
         </main>
 
-        <MachineDetailOverlay
-          machine={selectedMachine}
-          open={!!selectedMachine}
-          onOpenChange={(open) => {
-            if (!open) closeDetail();
-          }}
-          onChangeStatus={handleChangeStatus}
-          onUploadPhoto={handleUploadPhoto}
-        />
+        <div className="fixed inset-x-0 bottom-[78px] z-20 border-t border-divider bg-paper p-[10px_14px]">
+          <Button
+            render={<Link href="/presupuesto" />}
+            nativeButton={false}
+            variant="outline"
+            className="min-h-12 w-full gap-2"
+          >
+            <Calculator className="h-4 w-4" strokeWidth={1.8} />
+            Simular presupuesto
+          </Button>
+        </div>
       </div>
 
       {/* ---------- ESCRITORIO ---------- */}
@@ -193,6 +230,15 @@ export function MaquinasView() {
               <span className="shrink-0 text-[12px] text-text-3">
                 {fleet.WORKING} trabajando · {fleet.AVAILABLE} disponibles · {fleet.MAINTENANCE} en mantenimiento
               </span>
+              <Button
+                render={<Link href="/presupuesto" />}
+                nativeButton={false}
+                variant="outline"
+                className="min-h-[38px] shrink-0 gap-2"
+              >
+                <Calculator className="h-4 w-4" strokeWidth={1.8} />
+                Simular presupuesto
+              </Button>
             </div>
 
             <div className="grid grid-cols-2 gap-3">
@@ -200,6 +246,7 @@ export function MaquinasView() {
                 <MachineCardDesktop
                   key={m.code}
                   machine={m}
+                  href={machineHref(m.code)}
                   onChangeStatus={handleChangeStatus}
                   onUploadPhoto={handleUploadPhoto}
                   priority={i === 0}
@@ -213,6 +260,28 @@ export function MaquinasView() {
           </div>
         </main>
       </div>
+
+      <MachineDetailOverlay
+        machine={selectedMachine}
+        invoices={invoices}
+        expenses={expenses}
+        maintenanceRecords={maintenanceRecords}
+        open={!!selectedMachine}
+        onOpenChange={(open) => {
+          if (!open) closeDetail();
+        }}
+        onChangeStatus={handleChangeStatus}
+        onUploadPhoto={handleUploadPhoto}
+      />
+
+      <MaintenanceFormOverlay
+        machine={maintenanceMachine}
+        open={!!maintenanceMachine}
+        onOpenChange={(open) => {
+          if (!open) closeMaintenanceForm();
+        }}
+        onSubmit={handleStartMaintenance}
+      />
     </>
   );
 }

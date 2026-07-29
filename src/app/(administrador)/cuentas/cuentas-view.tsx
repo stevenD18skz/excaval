@@ -12,7 +12,7 @@ import { InvoiceRow } from "@/components/features/invoices/invoice-row";
 import { InvoiceDetailOverlay } from "@/components/features/invoices/invoice-detail-overlay";
 import { showActionToast } from "@/components/layout/action-toast";
 import { useExcavalStore } from "@/lib/excaval/store";
-import { porCobrar, sumInvoices, vencidas } from "@/lib/excaval/aggregates";
+import { invoicePaidAmount, porCobrar, sumInvoices, vencidas } from "@/lib/excaval/aggregates";
 
 type Filter = "todas" | "pagadas" | "pendientes";
 
@@ -30,8 +30,10 @@ export function CuentasView() {
 
   const invoices = useExcavalStore((s) => s.invoices);
   const clients = useExcavalStore((s) => s.clients);
+  const payments = useExcavalStore((s) => s.payments);
   const markInvoicePaid = useExcavalStore((s) => s.markInvoicePaid);
   const undoInvoicePaid = useExcavalStore((s) => s.undoInvoicePaid);
+  const addAbono = useExcavalStore((s) => s.addAbono);
 
   function clientName(clientId: string): string {
     return clients.find((c) => c.id === clientId)?.name ?? clientId;
@@ -68,19 +70,24 @@ export function CuentasView() {
   const counts = {
     todas: invoices.length,
     pagadas: invoices.filter((i) => i.status === "PAID").length,
-    pendientes: invoices.filter((i) => i.status === "PENDING").length,
+    pendientes: invoices.filter((i) => i.status !== "PAID").length,
   };
 
   const filtered = invoices.filter((inv) => {
     if (filter === "pagadas") return inv.status === "PAID";
-    if (filter === "pendientes") return inv.status === "PENDING";
+    if (filter === "pendientes") return inv.status !== "PAID";
     return true;
   });
 
   const facturado = sumInvoices(invoices);
-  const pendienteTotal = porCobrar(invoices);
+  const pendienteTotal = porCobrar(invoices, payments);
   const cobrado = facturado - pendienteTotal;
   const vencidasCount = vencidas(invoices);
+
+  function handleAddAbono(id: string, amount: number, note?: string) {
+    addAbono(id, amount, note);
+    showActionToast(`Abono registrado en ${id}. Saldo actualizado en el libro de cuentas.`);
+  }
 
   const segmentedOptions = [
     { value: "todas", label: "Todas", count: counts.todas },
@@ -134,6 +141,7 @@ export function CuentasView() {
                 invoice={inv}
                 clientName={clientName(inv.clientId)}
                 href={invoiceHref(inv.id)}
+                paidAmount={invoicePaidAmount(inv.id, payments)}
               />
             ))}
           </div>
@@ -193,6 +201,7 @@ export function CuentasView() {
                   clientName={clientName(inv.clientId)}
                   detailHref={invoiceHref(inv.id)}
                   onMarkPaid={handleMarkPaid}
+                  paidAmount={invoicePaidAmount(inv.id, payments)}
                 />
               ))}
             </div>
@@ -203,11 +212,13 @@ export function CuentasView() {
       <InvoiceDetailOverlay
         invoice={selectedInvoice}
         client={selectedClient}
+        payments={payments}
         open={!!selectedInvoice}
         onOpenChange={(open) => {
           if (!open) closeDetail();
         }}
         onMarkPaid={handleMarkPaid}
+        onAddAbono={handleAddAbono}
       />
     </>
   );

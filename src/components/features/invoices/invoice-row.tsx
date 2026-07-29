@@ -4,6 +4,7 @@ import type { Invoice } from "@/lib/excaval/types";
 import { Button } from "@/components/ui/button";
 import { Plate } from "@/components/shared/plate";
 import { Money } from "@/components/shared/money";
+import { formatMoney } from "@/lib/excaval/money";
 import {
   StatusBadge,
   invoiceBorderColor,
@@ -16,6 +17,8 @@ interface InvoiceRowProps {
   clientName: string;
   detailHref: string;
   onMarkPaid: (id: string) => void;
+  /** Suma de abonos ya registrados — solo se muestra si es > 0. */
+  paidAmount?: number;
 }
 
 /** Fila de factura de escritorio: acciones inline (cobrar y ver papel). */
@@ -24,6 +27,7 @@ export function InvoiceRow({
   clientName,
   detailHref,
   onMarkPaid,
+  paidAmount = 0,
 }: InvoiceRowProps) {
   return (
     <div
@@ -40,6 +44,11 @@ export function InvoiceRow({
         <span className="block truncate text-[12.5px] text-text-2">
           {invoice.concept}
         </span>
+        {paidAmount > 0 ? (
+          <span className="block text-[11px] text-accent-ink">
+            Abonado {formatMoney(paidAmount)} de {formatMoney(invoice.amount)}
+          </span>
+        ) : null}
       </span>
       <StatusBadge tone={invoiceStatusTone(invoice)} className="shrink-0">
         {invoiceStatusLabel(invoice)}

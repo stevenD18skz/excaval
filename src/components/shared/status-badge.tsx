@@ -55,7 +55,8 @@ export function machineStatusTone(status: MachineStatus): StatusTone {
 
 export function invoiceStatusLabel(invoice: Invoice): string {
   if (invoice.status === "PAID") return "Pagada";
-  return invoice.overdue ? "Vencida" : "Por cobrar";
+  if (invoice.overdue) return invoice.status === "PARTIAL" ? "Vencida · abono" : "Vencida";
+  return invoice.status === "PARTIAL" ? "Abono parcial" : "Por cobrar";
 }
 
 export function invoiceStatusTone(invoice: Invoice): StatusTone {

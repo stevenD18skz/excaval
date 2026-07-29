@@ -1,4 +1,4 @@
-import type { Expense, ExpenseCat, Invoice, Machine, MachineStatus } from "./types";
+import type { Expense, ExpenseCat, Invoice, Machine, MachineStatus, Payment } from "./types";
 import { EXPENSE_CAT_META } from "./types";
 
 export function sumInvoices(invoices: Invoice[]): number {
@@ -9,10 +9,24 @@ export function sumExpenses(expenses: Expense[]): number {
   return expenses.reduce((acc, e) => acc + e.amount, 0);
 }
 
-export function porCobrar(invoices: Invoice[]): number {
+/** Suma de abonos ya registrados contra una factura puntual. */
+export function invoicePaidAmount(invoiceId: string, payments: Payment[]): number {
+  return payments
+    .filter((p) => p.invoiceId === invoiceId)
+    .reduce((acc, p) => acc + p.amount, 0);
+}
+
+/** Lo que falta por cobrar de una factura — 0 si ya está PAID. */
+export function invoiceRemaining(invoice: Invoice, payments: Payment[]): number {
+  if (invoice.status === "PAID") return 0;
+  return invoice.amount - invoicePaidAmount(invoice.id, payments);
+}
+
+/** Por cobrar real: saldo pendiente de las facturas PENDING y PARTIAL (no el monto bruto). */
+export function porCobrar(invoices: Invoice[], payments: Payment[]): number {
   return invoices
-    .filter((i) => i.status === "PENDING")
-    .reduce((acc, i) => acc + i.amount, 0);
+    .filter((i) => i.status !== "PAID")
+    .reduce((acc, i) => acc + invoiceRemaining(i, payments), 0);
 }
 
 export function nomina(expenses: Expense[]): number {
@@ -22,7 +36,12 @@ export function nomina(expenses: Expense[]): number {
 }
 
 export function vencidas(invoices: Invoice[]): number {
-  return invoices.filter((i) => i.status === "PENDING" && i.overdue).length;
+  return invoices.filter((i) => i.status !== "PAID" && i.overdue).length;
+}
+
+/** Orden por fecha corta tipo '22 jul' — mismo criterio en todas las listas de movimientos. */
+export function dayOf(dateStr: string): number {
+  return parseInt(dateStr, 10) || 0;
 }
 
 export function fleetCounts(
@@ -54,11 +73,11 @@ export function currentMonthLabel(): string {
   return "jul";
 }
 
-export function computeAggregates(invoices: Invoice[], expenses: Expense[]) {
+export function computeAggregates(invoices: Invoice[], expenses: Expense[], payments: Payment[]) {
   const ingresos = sumInvoices(invoices);
   const egresos = sumExpenses(expenses);
   const neta = ingresos - egresos;
-  const pendiente = porCobrar(invoices);
+  const pendiente = porCobrar(invoices, payments);
   const cobrado = ingresos - pendiente;
   const nominaTotal = nomina(expenses);
   const gastosOp = egresos - nominaTotal;
@@ -133,4 +152,102 @@ export function expenseBreakdown(expenses: Expense[]): BreakdownItem[] {
     barPct: Math.round((amount / max) * 100),
     fill: BREAKDOWN_FILL[cat],
   }));
+}
+
+export interface MachineFinancials {
+  code: string;
+  name: string;
+  ingresos: number;
+  egresos: number;
+  neta: number;
+  margen: number;
+}
+
+function financialsForCode(
+  code: string,
+  invoices: Invoice[],
+  expenses: Expense[]
+): Omit<MachineFinancials, "code" | "name"> {
+  const ingresos = invoices
+    .filter((i) => i.machineCode === code)
+    .reduce((acc, i) => acc + i.amount, 0);
+  const egresos = expenses
+    .filter((e) => e.machine === code)
+    .reduce((acc, e) => acc + e.amount, 0);
+  const neta = ingresos - egresos;
+  return {
+    ingresos,
+    egresos,
+    neta,
+    margen: ingresos > 0 ? Math.round((neta / ingresos) * 100) : 0,
+  };
+}
+
+/** Cuánto ha generado y gastado cada máquina — atribución por Invoice.machineCode / Expense.machine. */
+export function machineFinancials(
+  machines: Machine[],
+  invoices: Invoice[],
+  expenses: Expense[]
+): MachineFinancials[] {
+  return machines.map((m) => ({
+    code: m.code,
+    name: m.name,
+    ...financialsForCode(m.code, invoices, expenses),
+  }));
+}
+
+/** Igual que machineFinancials pero para una sola máquina — usado en el tab Rendimiento. */
+export function machineFinancialsFor(
+  code: string,
+  invoices: Invoice[],
+  expenses: Expense[]
+): Omit<MachineFinancials, "code" | "name"> {
+  return financialsForCode(code, invoices, expenses);
+}
+
+export interface MachineMovement {
+  kind: "income" | "expense";
+  id: string;
+  /** Código corto para la placa: 'FAC' en ingresos, código de categoría en salidas. */
+  code: string;
+  title: string;
+  sub: string;
+  amount: number;
+  day: number;
+  href: string;
+}
+
+/** Historial de movimientos (facturas + salidas) de una máquina puntual, más reciente primero. */
+export function machineMovements(
+  code: string,
+  invoices: Invoice[],
+  expenses: Expense[]
+): MachineMovement[] {
+  const income: MachineMovement[] = invoices
+    .filter((i) => i.machineCode === code)
+    .map((i) => ({
+      kind: "income",
+      id: i.id,
+      code: "FAC",
+      title: i.concept,
+      sub: `Ingreso · ${i.date.replace(" 2026", "")}`,
+      amount: i.amount,
+      day: dayOf(i.date),
+      href: `/cuentas?factura=${i.id}`,
+    }));
+
+  const expense: MachineMovement[] = expenses
+    .filter((e) => e.machine === code)
+    .map((e) => ({
+      kind: "expense",
+      id: e.id,
+      code: EXPENSE_CAT_META[e.cat].code,
+      title: e.desc,
+      sub: `${EXPENSE_CAT_META[e.cat].label} · ${e.date}`,
+      amount: e.amount,
+      day: dayOf(e.date),
+      href: `/salidas?cat=${e.cat}`,
+    }));
+
+  return [...income, ...expense].sort((a, b) => b.day - a.day);
 }

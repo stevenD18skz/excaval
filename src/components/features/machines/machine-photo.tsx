@@ -27,7 +27,14 @@ export function MachinePhoto({ src, alt, className, priority = false }: MachineP
 
   return (
     <div className={cn("relative shrink-0 overflow-hidden border border-ink", className)}>
-       
+      <Image
+        src={src}
+        alt={alt}
+        fill
+        priority={priority}
+        sizes="(max-width: 1024px) 30vw, 200px"
+        className="object-cover"
+      />
     </div>
   );
 }

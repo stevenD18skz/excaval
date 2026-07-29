@@ -1,4 +1,13 @@
-import type { Client, Expense, Invoice, Machine, PayrollEntry } from "./types";
+import type {
+  Client,
+  Expense,
+  Invoice,
+  Machine,
+  MaintenanceRecord,
+  Payment,
+  PayrollEntry,
+  Quote,
+} from "./types";
 
 export const clients: Client[] = [
   {
@@ -42,9 +51,10 @@ export const invoices: Invoice[] = [
   {
     id: "FAC-0182",
     clientId: "andina",
+    machineCode: "EX-01",
     concept: "Alquiler excavadora EX-01 · 240 h · Vía Rionegro–La Ceja",
     amount: 28_400_000,
-    status: "PENDING",
+    status: "PARTIAL",
     date: "12 jul 2026",
     due: "Vencida 12 días",
     overdue: true,
@@ -53,6 +63,7 @@ export const invoices: Invoice[] = [
   {
     id: "FAC-0189",
     clientId: "rionegro",
+    machineCode: "MN-01",
     concept: "Nivelación de vía · motoniveladora MN-01 · 96 h",
     amount: 14_680_000,
     status: "PENDING",
@@ -64,9 +75,10 @@ export const invoices: Invoice[] = [
   {
     id: "FAC-0191",
     clientId: "ceja",
+    machineCode: "VQ-02",
     concept: "Transporte de material · volqueta VQ-02 · 38 viajes",
     amount: 11_000_000,
-    status: "PENDING",
+    status: "PARTIAL",
     date: "20 jul 2026",
     due: "Vence 30 jul",
     overdue: false,
@@ -75,6 +87,7 @@ export const invoices: Invoice[] = [
   {
     id: "FAC-0176",
     clientId: "vialpisos",
+    machineCode: "RD-01",
     concept: "Compactación con rodillo RD-01 · 60 h",
     amount: 9_200_000,
     status: "PAID",
@@ -86,6 +99,7 @@ export const invoices: Invoice[] = [
   {
     id: "FAC-0170",
     clientId: "andina",
+    machineCode: "RX-01",
     concept: "Alquiler retroexcavadora RX-01 · 180 h",
     amount: 21_500_000,
     status: "PAID",
@@ -97,6 +111,7 @@ export const invoices: Invoice[] = [
   {
     id: "FAC-0164",
     clientId: "guarne",
+    machineCode: "CG-01",
     concept: "Cargador CG-01 · descapote 500 m³",
     amount: 7_620_000,
     status: "PAID",
@@ -104,6 +119,24 @@ export const invoices: Invoice[] = [
     due: "Pagada 6 jul",
     overdue: false,
     photo: true,
+  },
+];
+
+/** Abonos parciales ya registrados contra facturas PARTIAL del seed. */
+export const payments: Payment[] = [
+  {
+    id: "ABO-0001",
+    invoiceId: "FAC-0182",
+    amount: 10_000_000,
+    date: "20 jul",
+    note: "Anticipo a 30 días",
+  },
+  {
+    id: "ABO-0002",
+    invoiceId: "FAC-0191",
+    amount: 5_000_000,
+    date: "24 jul",
+    note: "Primer abono",
   },
 ];
 
@@ -197,24 +230,23 @@ export const expenses: Expense[] = [
     machine: "—",
     photo: false,
   },
+  {
+    id: "GAS-0432",
+    cat: "REPARACION",
+    desc: "Cambio de bomba hidráulica · mantenimiento preventivo 18.000 h",
+    amount: 4_200_000,
+    date: "22 jul",
+    machine: "EX-02",
+    photo: true,
+  },
 ];
 
 /**
- * Fotos de referencia por tipo de máquina — placeholders reales tomados de
- * Wikimedia Commons (dominio público / licencia libre) mientras la empresa
- * sube fotos propias de cada activo desde la hoja del semáforo.
+ * Foto real de la empresa — por ahora la única disponible. Se usa en todas
+ * las máquinas (admin, catálogo público y galería) hasta que suban fotos
+ * propias de cada activo desde la hoja del semáforo.
  */
-const STOCK_PHOTO = {
-  excavadora: "https://upload.wikimedia.org/wikipedia/commons/b/bc/Excavator_0025.jpg",
-  retroexcavadora:
-    "https://upload.wikimedia.org/wikipedia/commons/f/f5/JCB_3CX_backhoe_loader.JPG",
-  volqueta: "https://upload.wikimedia.org/wikipedia/commons/c/cf/Caterpillar_dump_truck.jpg",
-  rodillo: "https://upload.wikimedia.org/wikipedia/commons/7/77/A_Road_roller.JPG",
-  motoniveladora:
-    "https://upload.wikimedia.org/wikipedia/commons/d/d4/Caterpillar_12G_grader_MD3.jpg",
-  cargador:
-    "https://upload.wikimedia.org/wikipedia/commons/1/18/Caterpillar_950k_Wheel_Loader.jpg",
-} as const;
+const MACHINE_PHOTO = "/Maquinas/maquina_1.jpeg";
 
 export const machines: Machine[] = [
   {
@@ -227,7 +259,17 @@ export const machines: Machine[] = [
     hours: "14.820 h",
     since: "desde 12 mar",
     updated: "Hoy 06:40 · operario J. Muñoz",
-    photo: STOCK_PHOTO.excavadora,
+    photo: MACHINE_PHOTO,
+    suggestedRate: 120_000,
+    publicDescription:
+      "Excavadora de orugas de gran capacidad, ideal para excavación profunda, movimiento de tierra y demolición controlada en obras de infraestructura vial.",
+    specs: [
+      { label: "Potencia", value: "121 kW (162 HP)" },
+      { label: "Peso operativo", value: "20.300 kg" },
+      { label: "Capacidad de cucharón", value: "1,19 m³" },
+      { label: "Alcance máx. de excavación", value: "9,9 m" },
+      { label: "Año", value: "2019" },
+    ],
   },
   {
     code: "RX-01",
@@ -239,7 +281,17 @@ export const machines: Machine[] = [
     hours: "9.410 h",
     since: "desde 3 jul",
     updated: "Ayer 17:20 · operario A. Ceballos",
-    photo: STOCK_PHOTO.retroexcavadora,
+    photo: MACHINE_PHOTO,
+    suggestedRate: 120_000,
+    publicDescription:
+      "Retroexcavadora versátil 2 en 1 — cargador frontal y brazo excavador — perfecta para obras urbanas, zanjeo y urbanizaciones por etapas.",
+    specs: [
+      { label: "Potencia", value: "74 kW (99 HP)" },
+      { label: "Peso operativo", value: "7.700 kg" },
+      { label: "Profundidad de excavación", value: "4,3 m" },
+      { label: "Capacidad de cargador frontal", value: "1,03 m³" },
+      { label: "Año", value: "2020" },
+    ],
   },
   {
     code: "VQ-01",
@@ -251,7 +303,17 @@ export const machines: Machine[] = [
     hours: "186.400 km",
     since: "desde 20 jul",
     updated: "Hoy 05:55 · operario W. Ospina",
-    photo: STOCK_PHOTO.volqueta,
+    photo: MACHINE_PHOTO,
+    suggestedRate: 90_000,
+    publicDescription:
+      "Volqueta doble troque de alta capacidad para transporte de material de cantera, escombro y llenos en grandes volúmenes.",
+    specs: [
+      { label: "Capacidad de carga", value: "14 m³" },
+      { label: "Peso bruto vehicular", value: "30.000 kg" },
+      { label: "Motor", value: "400 HP" },
+      { label: "Configuración de ejes", value: "3 ejes (doble troque)" },
+      { label: "Año", value: "2018" },
+    ],
   },
   {
     code: "VQ-02",
@@ -263,7 +325,17 @@ export const machines: Machine[] = [
     hours: "142.900 km",
     since: "desde 18 jul",
     updated: "Hoy 08:10 · operario W. Ospina",
-    photo: STOCK_PHOTO.volqueta,
+    photo: MACHINE_PHOTO,
+    suggestedRate: 85_000,
+    publicDescription:
+      "Volqueta sencilla ágil para obra urbana y transporte de material en vías de acceso restringido.",
+    specs: [
+      { label: "Capacidad de carga", value: "7 m³" },
+      { label: "Peso bruto vehicular", value: "15.000 kg" },
+      { label: "Motor", value: "230 HP" },
+      { label: "Configuración de ejes", value: "2 ejes (sencilla)" },
+      { label: "Año", value: "2016" },
+    ],
   },
   {
     code: "RD-01",
@@ -275,7 +347,17 @@ export const machines: Machine[] = [
     hours: "6.230 h",
     since: "desde 11 jul",
     updated: "Hoy 07:00 · operario S. Ríos",
-    photo: STOCK_PHOTO.rodillo,
+    photo: MACHINE_PHOTO,
+    suggestedRate: 150_000,
+    publicDescription:
+      "Rodillo compactador liso para bases, sub-bases y capas asfálticas — control de vibración de alta precisión.",
+    specs: [
+      { label: "Peso operativo", value: "12.700 kg" },
+      { label: "Ancho de rodillo", value: "2,13 m" },
+      { label: "Frecuencia de vibración", value: "30 Hz" },
+      { label: "Potencia", value: "100 kW (134 HP)" },
+      { label: "Año", value: "2021" },
+    ],
   },
   {
     code: "MN-01",
@@ -287,7 +369,16 @@ export const machines: Machine[] = [
     hours: "11.050 h",
     since: "desde 14 jul",
     updated: "Hoy 06:15 · operario C. Vélez",
-    photo: STOCK_PHOTO.motoniveladora,
+    photo: MACHINE_PHOTO,
+    suggestedRate: 150_000,
+    publicDescription:
+      "Motoniveladora de precisión para conformación y nivelación de vías, terraplenes y placas de urbanización.",
+    specs: [
+      { label: "Potencia", value: "125 kW (168 HP)" },
+      { label: "Peso operativo", value: "14.700 kg" },
+      { label: "Ancho de la cuchilla", value: "3,7 m" },
+      { label: "Año", value: "2019" },
+    ],
   },
   {
     code: "CG-01",
@@ -299,7 +390,16 @@ export const machines: Machine[] = [
     hours: "8.760 h",
     since: "desde 6 jul",
     updated: "Ayer 16:40 · operario J. Muñoz",
-    photo: STOCK_PHOTO.cargador,
+    photo: MACHINE_PHOTO,
+    suggestedRate: 110_000,
+    publicDescription:
+      "Cargador de ruedas para descapote, cargue de material y patio — ciclos rápidos y gran capacidad de cucharón.",
+    specs: [
+      { label: "Potencia", value: "179 kW (240 HP)" },
+      { label: "Peso operativo", value: "18.500 kg" },
+      { label: "Capacidad de cucharón", value: "2,7 m³" },
+      { label: "Año", value: "2020" },
+    ],
   },
   {
     code: "EX-02",
@@ -311,6 +411,55 @@ export const machines: Machine[] = [
     hours: "18.230 h",
     since: "desde 22 jul",
     updated: "Hoy 09:05 · operario A. Ceballos",
-    photo: STOCK_PHOTO.excavadora,
+    photo: MACHINE_PHOTO,
+    suggestedRate: 100_000,
+    publicDescription:
+      "Excavadora compacta de orugas, ágil en espacios reducidos — zanjeo, redes y obra urbana.",
+    specs: [
+      { label: "Potencia", value: "68 kW (91 HP)" },
+      { label: "Peso operativo", value: "13.700 kg" },
+      { label: "Capacidad de cucharón", value: "0,52 m³" },
+      { label: "Alcance máx. de excavación", value: "7,7 m" },
+      { label: "Año", value: "2017" },
+    ],
+  },
+];
+
+/** Mantenimientos en curso — vinculados 1:1 con el Expense REPARACION que generó su costo. */
+export const maintenanceRecords: MaintenanceRecord[] = [
+  {
+    id: "MNT-0001",
+    machineCode: "VQ-02",
+    reason: "Reparación sistema de frenos",
+    startDate: "18 jul",
+    estimatedDays: 8,
+    cost: 3_100_000,
+    hasInvoice: true,
+    status: "EN_CURSO",
+    expenseId: "GAS-0428",
+  },
+  {
+    id: "MNT-0002",
+    machineCode: "EX-02",
+    reason: "Cambio de bomba hidráulica · mantenimiento preventivo 18.000 h",
+    startDate: "22 jul",
+    estimatedDays: 5,
+    cost: 4_200_000,
+    hasInvoice: true,
+    status: "EN_CURSO",
+    expenseId: "GAS-0432",
+  },
+];
+
+/** Historial de simulaciones ya hechas en el cotizador. */
+export const quotes: Quote[] = [
+  {
+    id: "COT-0001",
+    machineCode: "EX-01",
+    clientName: "Constructora Andina S.A.S.",
+    hours: 120,
+    ratePerHour: 120_000,
+    total: 14_400_000,
+    date: "15 jul",
   },
 ];

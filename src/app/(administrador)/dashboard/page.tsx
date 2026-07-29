@@ -16,6 +16,7 @@ import { StatCard } from "@/components/shared/stat-card";
 import { TrafficLight } from "@/components/shared/traffic-light";
 import { MachinePhoto } from "@/components/features/machines/machine-photo";
 import { BalanceChart } from "@/components/features/dashboard/balance-chart";
+import { MachineProfitChart } from "@/components/features/dashboard/machine-profit-chart";
 import { ExpenseBreakdown } from "@/components/features/expenses/expense-breakdown";
 import { MobileHeader } from "@/components/layout/mobile-header";
 import { DesktopTopbar } from "@/components/layout/desktop-topbar";
@@ -30,6 +31,8 @@ import {
   computeAggregates,
   expenseBreakdown,
   fleetCounts,
+  invoicePaidAmount,
+  machineFinancials,
 } from "@/lib/excaval/aggregates";
 import { EXPENSE_CAT_META } from "@/lib/excaval/types";
 import type { MachineStatus } from "@/lib/excaval/types";
@@ -59,6 +62,7 @@ export default function DashboardPage() {
   const expenses = useExcavalStore((s) => s.expenses);
   const machines = useExcavalStore((s) => s.machines);
   const clients = useExcavalStore((s) => s.clients);
+  const payments = useExcavalStore((s) => s.payments);
   const markInvoicePaid = useExcavalStore((s) => s.markInvoicePaid);
   const undoInvoicePaid = useExcavalStore((s) => s.undoInvoicePaid);
 
@@ -74,11 +78,12 @@ export default function DashboardPage() {
     );
   }
 
-  const agg = computeAggregates(invoices, expenses);
+  const agg = computeAggregates(invoices, expenses, payments);
   const breakdown = expenseBreakdown(expenses);
   const fleet = fleetCounts(machines);
+  const machineFin = machineFinancials(machines, invoices, expenses);
 
-  const pendingInvoices = invoices.filter((i) => i.status === "PENDING");
+  const pendingInvoices = invoices.filter((i) => i.status !== "PAID");
   const pendingCount = pendingInvoices.length;
 
   const currentMonth = agg.chart[agg.chart.length - 1];
@@ -243,6 +248,11 @@ export default function DashboardPage() {
             </div>
           </section>
 
+          {/* Rendimiento por máquina */}
+          <div className="border border-divider p-[13px_12px]">
+            <MachineProfitChart data={machineFin} barHeight={8} />
+          </div>
+
           {/* Últimos movimientos */}
           <section>
             <SectionLabel>Últimos movimientos</SectionLabel>
@@ -372,6 +382,11 @@ export default function DashboardPage() {
               </div>
             </section>
 
+            {/* Rendimiento por máquina */}
+            <div className="border border-divider p-4">
+              <MachineProfitChart data={machineFin} />
+            </div>
+
             {/* Facturas por cobrar */}
             <section className="border border-divider">
               <div className="flex items-center justify-between border-b border-divider p-3.5">
@@ -404,6 +419,11 @@ export default function DashboardPage() {
                         <span className="block truncate text-[12.5px] text-text-2">
                           {inv.concept}
                         </span>
+                        {inv.status === "PARTIAL" ? (
+                          <span className="block text-[11px] text-accent-ink">
+                            Abonado {formatMoney(invoicePaidAmount(inv.id, payments))}
+                          </span>
+                        ) : null}
                       </span>
                       <span
                         className={cn(
