@@ -1,6 +1,6 @@
-import { Sidebar } from "@/components/excavla/sidebar";
-import { BottomNav } from "@/components/excavla/bottom-nav";
-import { StoreHydrator } from "@/components/excavla/store-hydrator";
+import { Sidebar } from "@/components/layout/sidebar";
+import { BottomNav } from "@/components/layout/bottom-nav";
+import { StoreHydrator } from "@/components/layout/store-hydrator";
 
 export default function AppLayout({
   children,

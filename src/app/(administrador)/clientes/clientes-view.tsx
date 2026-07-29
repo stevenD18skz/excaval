@@ -2,15 +2,15 @@
 
 import { Search } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { MobileHeader } from "@/components/excavla/mobile-header";
-import { DesktopTopbar } from "@/components/excavla/desktop-topbar";
-import { ClientCard } from "@/components/excavla/client-card";
-import { ClientRow } from "@/components/excavla/client-row";
-import { ClientDetailContent } from "@/components/excavla/client-detail-content";
-import { Blueprint } from "@/components/excavla/blueprint";
+import { MobileHeader } from "@/components/layout/mobile-header";
+import { DesktopTopbar } from "@/components/layout/desktop-topbar";
+import { ClientCard } from "@/components/features/clients/client-card";
+import { ClientRow } from "@/components/features/clients/client-row";
+import { ClientDetailContent } from "@/components/features/clients/client-detail-content";
+import { Blueprint } from "@/components/shared/blueprint";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
-import { useExcavlaStore } from "@/lib/excavla/store";
-import type { Client, Invoice } from "@/lib/excavla/types";
+import { useExcavalStore } from "@/lib/excaval/store";
+import type { Client, Invoice } from "@/lib/excaval/types";
 
 function buildHref(base: string, params: URLSearchParams) {
   const qs = params.toString();
@@ -43,8 +43,8 @@ export function ClientesView() {
   const q = searchParams.get("q") ?? "";
   const selectedId = searchParams.get("cliente");
 
-  const clients = useExcavlaStore((s) => s.clients);
-  const invoices = useExcavlaStore((s) => s.invoices);
+  const clients = useExcavalStore((s) => s.clients);
+  const invoices = useExcavalStore((s) => s.invoices);
 
   function setParams(mutate: (params: URLSearchParams) => void) {
     const params = new URLSearchParams(searchParams.toString());

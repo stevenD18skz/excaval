@@ -1,9 +1,9 @@
 import { Camera } from "lucide-react";
 import { cn } from "@/lib/utils";
-import type { Expense } from "@/lib/excavla/types";
-import { EXPENSE_CAT_META } from "@/lib/excavla/types";
-import { Plate, type PlateVariant } from "./plate";
-import { Money } from "./money";
+import type { Expense } from "@/lib/excaval/types";
+import { EXPENSE_CAT_META } from "@/lib/excaval/types";
+import { Plate, type PlateVariant } from "@/components/shared/plate";
+import { Money } from "@/components/shared/money";
 
 const CAT_PLATE_VARIANT: Record<Expense["cat"], PlateVariant> = {
   GASOLINA: "accent",

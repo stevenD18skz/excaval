@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { RotateCcw } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useExcavlaStore } from "@/lib/excavla/store";
+import { useExcavalStore } from "@/lib/excaval/store";
 import { showActionToast } from "./action-toast";
 import { NAV_ITEMS } from "./nav-items";
 import { HazardTape } from "./hazard-tape";
@@ -16,7 +16,7 @@ function isActive(pathname: string, href: string) {
 /** Barra lateral fija de escritorio, 216px — reemplaza el nav inferior a partir de `lg`. */
 export function Sidebar({ className }: { className?: string }) {
   const pathname = usePathname();
-  const resetDemo = useExcavlaStore((s) => s.resetDemo);
+  const resetDemo = useExcavalStore((s) => s.resetDemo);
 
   function handleReset() {
     resetDemo();
@@ -32,7 +32,7 @@ export function Sidebar({ className }: { className?: string }) {
     >
       <div className="border-b border-ink-line px-[18px] pb-4">
         <div className="font-heading text-[22px] font-semibold tracking-[.14em] text-accent-500">
-          EXCAVLA
+          EXCAVAL
         </div>
         <div className="mt-1 font-heading text-[11px] font-semibold tracking-[.14em] text-text-4 uppercase">
           Gerencia · Rionegro
@@ -47,7 +47,7 @@ export function Sidebar({ className }: { className?: string }) {
               key={href}
               href={href}
               className={cn(
-                "flex min-h-11 items-center gap-2.5 border-l-[3px] px-4 py-[11px] font-heading text-sm font-semibold tracking-[.08em] uppercase",
+                "flex min-h-11 items-center gap-2.5 border-l-[3px] px-4 py-[11px] font-heading text-sm font-semibold tracking-[.08em] uppercase hover:text-paper",
                 active
                   ? "border-accent-500 bg-ink-soft text-paper"
                   : "border-transparent text-nav-inactive"

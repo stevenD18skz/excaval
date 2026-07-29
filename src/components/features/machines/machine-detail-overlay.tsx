@@ -3,10 +3,10 @@
 import type { ReactNode } from "react";
 import { Clock, Home, MapPin } from "lucide-react";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
-import type { Machine, MachineStatus } from "@/lib/excavla/types";
-import { Blueprint } from "./blueprint";
-import { Plate } from "./plate";
-import { TrafficLight } from "./traffic-light";
+import type { Machine, MachineStatus } from "@/lib/excaval/types";
+import { Blueprint } from "@/components/shared/blueprint";
+import { Plate } from "@/components/shared/plate";
+import { TrafficLight } from "@/components/shared/traffic-light";
 import { MachineStatusControl } from "./machine-status-control";
 import { MachinePhotoUpload } from "./machine-photo-upload";
 

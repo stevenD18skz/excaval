@@ -3,7 +3,7 @@
 import { useState, type ChangeEvent } from "react";
 import { Camera, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { fileToResizedDataUrl } from "@/lib/excavla/image";
+import { fileToResizedDataUrl } from "@/lib/excaval/image";
 import { MachinePhoto } from "./machine-photo";
 
 interface MachinePhotoUploadProps {

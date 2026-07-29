@@ -2,21 +2,21 @@
 
 import { Plus } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { MobileHeader } from "@/components/excavla/mobile-header";
-import { DesktopTopbar } from "@/components/excavla/desktop-topbar";
-import { Segmented } from "@/components/excavla/segmented";
-import { Blueprint } from "@/components/excavla/blueprint";
-import { Money } from "@/components/excavla/money";
-import { ExpenseCard } from "@/components/excavla/expense-card";
-import { PayrollRow } from "@/components/excavla/payroll-row";
-import { ExpenseFormOverlay } from "@/components/excavla/expense-form";
-import { showActionToast } from "@/components/excavla/action-toast";
+import { MobileHeader } from "@/components/layout/mobile-header";
+import { DesktopTopbar } from "@/components/layout/desktop-topbar";
+import { Segmented } from "@/components/shared/segmented";
+import { Blueprint } from "@/components/shared/blueprint";
+import { Money } from "@/components/shared/money";
+import { ExpenseCard } from "@/components/features/expenses/expense-card";
+import { PayrollRow } from "@/components/features/expenses/payroll-row";
+import { ExpenseFormOverlay } from "@/components/features/expenses/expense-form";
+import { showActionToast } from "@/components/layout/action-toast";
 import { Button } from "@/components/ui/button";
-import { useExcavlaStore, type NewExpenseInput } from "@/lib/excavla/store";
-import { payroll } from "@/lib/excavla/seed-data";
-import { nomina, sumExpenses } from "@/lib/excavla/aggregates";
-import { formatMoney } from "@/lib/excavla/money";
-import { EXPENSE_CAT_META, type ExpenseCat } from "@/lib/excavla/types";
+import { useExcavalStore, type NewExpenseInput } from "@/lib/excaval/store";
+import { payroll } from "@/lib/excaval/seed-data";
+import { nomina, sumExpenses } from "@/lib/excaval/aggregates";
+import { formatMoney } from "@/lib/excaval/money";
+import { EXPENSE_CAT_META, type ExpenseCat } from "@/lib/excaval/types";
 import { cn } from "@/lib/utils";
 
 type SalidasTab = "gastos" | "sueldos";
@@ -37,9 +37,9 @@ export function SalidasView() {
   const catFilter = ((searchParams.get("cat") as CatFilter) || "todas") as CatFilter;
   const formOpen = searchParams.get("sheet") === "form";
 
-  const expenses = useExcavlaStore((s) => s.expenses);
-  const machines = useExcavlaStore((s) => s.machines);
-  const addExpense = useExcavlaStore((s) => s.addExpense);
+  const expenses = useExcavalStore((s) => s.expenses);
+  const machines = useExcavalStore((s) => s.machines);
+  const addExpense = useExcavalStore((s) => s.addExpense);
 
   function setParams(mutate: (params: URLSearchParams) => void) {
     const params = new URLSearchParams(searchParams.toString());

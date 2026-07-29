@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import type { Client } from "@/lib/excavla/types";
-import { initials } from "@/lib/excavla/format";
-import { formatMoneyShort } from "@/lib/excavla/money";
-import { StatusBadge } from "./status-badge";
+import type { Client } from "@/lib/excaval/types";
+import { initials } from "@/lib/excaval/format";
+import { formatMoneyShort } from "@/lib/excaval/money";
+import { StatusBadge } from "@/components/shared/status-badge";
 
 interface ClientCardProps {
   client: Client;

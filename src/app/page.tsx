@@ -10,11 +10,11 @@ import {
   Users,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Blueprint } from "@/components/excavla/blueprint";
-import { Plate } from "@/components/excavla/plate";
-import { HazardTape } from "@/components/excavla/hazard-tape";
-import { SectionLabel } from "@/components/excavla/section-label";
-import { MachineNavIcon } from "@/components/excavla/nav-items";
+import { Blueprint } from "@/components/shared/blueprint";
+import { Plate } from "@/components/shared/plate";
+import { HazardTape } from "@/components/layout/hazard-tape";
+import { SectionLabel } from "@/components/shared/section-label";
+import { MachineNavIcon } from "@/components/layout/nav-items";
 
 const MODULES = [
   {
@@ -57,7 +57,7 @@ export default function LandingPage() {
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 lg:px-8">
           <div className="flex items-center gap-2.5">
             <span className="font-heading text-lg font-semibold tracking-[.14em] text-accent-500">
-              EXCAVLA
+              EXCAVAL
             </span>
             <span className="hidden h-4 w-px bg-ink-line sm:block" />
             <span className="hidden font-heading text-xs font-semibold tracking-[.1em] text-text-4 uppercase sm:block">
@@ -84,7 +84,7 @@ export default function LandingPage() {
                 Controla el dinero, los papeles y las máquinas de tu empresa desde un solo lugar.
               </h1>
               <p className="mt-4 max-w-lg text-[15px] leading-[1.5] text-text-2">
-                EXCAVLA es la herramienta interna para empresas de maquinaria pesada —
+                EXCAVAL es la herramienta interna para empresas de maquinaria pesada —
                 excavadoras, retroexcavadoras, volquetas, rodillos, cargadores, motoniveladoras.
                 Un solo rol, sin permisos que confundir: gerencia consulta y registra todo desde
                 el celular, parada en la obra.
@@ -108,7 +108,7 @@ export default function LandingPage() {
                 </Button>
               </div>
               <p className="mt-3.5 max-w-md text-[12px] leading-[1.45] text-text-3">
-                No necesitas crear cuenta: es una simulación con los datos de Excavla Rionegro,
+                No necesitas crear cuenta: es una simulación con los datos de Excaval Rionegro,
                 una empresa ficticia. Cobrar facturas, cambiar el semáforo de una máquina o
                 registrar una salida se guarda en tu navegador mientras dure la sesión, para que
                 se sienta como el sistema real.
@@ -221,7 +221,7 @@ export default function LandingPage() {
         <HazardTape />
         <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-2 px-4 py-5 sm:flex-row sm:items-center lg:px-8">
           <span className="font-heading text-sm font-semibold tracking-[.1em] text-accent-500">
-            EXCAVLA
+            EXCAVAL
           </span>
           <span className="text-[11.5px] text-text-4">
             Sistema de gestión administrativa y operativa para maquinaria pesada.

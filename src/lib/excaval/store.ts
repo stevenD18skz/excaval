@@ -25,7 +25,7 @@ export interface NewExpenseInput {
   photo: boolean;
 }
 
-interface ExcavlaState {
+interface ExcavalState {
   invoices: Invoice[];
   expenses: Expense[];
   machines: Machine[];
@@ -48,7 +48,7 @@ interface ExcavlaState {
  * producción esto se reemplaza por mutaciones al backend con el mismo
  * patrón, y `sessionStorage` por la fuente de verdad real.
  */
-export const useExcavlaStore = create<ExcavlaState>()(
+export const useExcavalStore = create<ExcavalState>()(
   persist(
     (set, get) => ({
       invoices: seedInvoices,
@@ -136,7 +136,7 @@ export const useExcavlaStore = create<ExcavlaState>()(
         }),
     }),
     {
-      name: "excavla-demo",
+      name: "excaval-demo",
       storage: createJSONStorage(() => sessionStorage),
       // Evita el desajuste de hidratación en Next: el primer render del
       // cliente usa el seed (igual que el servidor) y StoreHydrator

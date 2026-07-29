@@ -1,15 +1,15 @@
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import type { Invoice } from "@/lib/excavla/types";
+import type { Invoice } from "@/lib/excaval/types";
 import { Button } from "@/components/ui/button";
-import { Plate } from "./plate";
-import { Money } from "./money";
+import { Plate } from "@/components/shared/plate";
+import { Money } from "@/components/shared/money";
 import {
   StatusBadge,
   invoiceBorderColor,
   invoiceStatusLabel,
   invoiceStatusTone,
-} from "./status-badge";
+} from "@/components/shared/status-badge";
 
 interface InvoiceRowProps {
   invoice: Invoice;
@@ -56,11 +56,14 @@ export function InvoiceRow({
         <Money value={invoice.amount} />
       </span>
       <span className="flex w-[190px] shrink-0 items-center justify-end gap-2">
+
+        
         {invoice.status === "PENDING" ? (
           <Button type="button" className="min-h-10" onClick={() => onMarkPaid(invoice.id)}>
             Marcar cobrada
           </Button>
         ) : null}
+
         <Button
           variant="outline"
           render={<Link href={detailHref} />}

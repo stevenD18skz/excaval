@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
-import type { MonthSummary } from "@/lib/excavla/aggregates";
-import { SectionLabel } from "./section-label";
+import type { MonthSummary } from "@/lib/excaval/aggregates";
+import { SectionLabel } from "@/components/shared/section-label";
 
 interface BalanceChartProps {
   months: MonthSummary[];

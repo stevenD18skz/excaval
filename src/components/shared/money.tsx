@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { formatMoney, formatMoneyShort } from "@/lib/excavla/money";
+import { formatMoney, formatMoneyShort } from "@/lib/excaval/money";
 
 interface MoneyProps {
   value: number;

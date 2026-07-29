@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
-import type { BreakdownItem } from "@/lib/excavla/aggregates";
-import { formatMoneyShort } from "@/lib/excavla/money";
+import type { BreakdownItem } from "@/lib/excaval/aggregates";
+import { formatMoneyShort } from "@/lib/excaval/money";
 
 interface ExpenseBreakdownProps {
   items: BreakdownItem[];

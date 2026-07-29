@@ -1,8 +1,8 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import type { MachineStatus } from "@/lib/excavla/types";
-import { machineStatusLabel } from "./status-badge";
+import type { MachineStatus } from "@/lib/excaval/types";
+import { machineStatusLabel } from "@/components/shared/status-badge";
 
 const ORDER: MachineStatus[] = ["WORKING", "AVAILABLE", "MAINTENANCE"];
 

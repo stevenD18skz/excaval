@@ -5,7 +5,7 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* EXCAVLA — estructura */
+  /* EXCAVAL — estructura */
   --ink: #141414;
   --ink-soft: #242422;
   --ink-line: #2c2c2a;
@@ -13,12 +13,12 @@
   --paper: #ffffff;
   --surface: #f6f6f4;
 
-  /* EXCAVLA — hairlines */
+  /* EXCAVAL — hairlines */
   --divider: rgba(20, 20, 20, 0.16);
   --divider-strong: rgba(20, 20, 20, 0.24);
   --divider-dash: rgba(20, 20, 20, 0.2);
 
-  /* EXCAVLA — texto */
+  /* EXCAVAL — texto */
   --text: #141414;
   --text-2: #3a3a38;
   --text-3: #6c6c68;
@@ -26,7 +26,7 @@
   --text-on-dark: #a3a39e;
   --nav-inactive: #8f8f8a;
 
-  /* EXCAVLA — rampa de acento (amarillo industrial) */
+  /* EXCAVAL — rampa de acento (amarillo industrial) */
   --accent-100: #fff6d9;
   --accent-200: #ffe89e;
   --accent-300: #ffd85c;
@@ -38,7 +38,7 @@
   --accent-900: #3d2d00;
   --accent-ink: #5c4400;
 
-  /* EXCAVLA — semántica de estado */
+  /* EXCAVAL — semántica de estado */
   --status-working: #1c7a4b;
   --status-working-bg: #e4f2ea;
   --status-working-text: #0f5334;
@@ -51,7 +51,7 @@
   --status-maintenance-text: #8a2716;
   --status-off: #d7d7d2;
 
-  /* shadcn — remapeado a la paleta EXCAVLA */
+  /* shadcn — remapeado a la paleta EXCAVAL */
   --background: var(--paper);
   --foreground: var(--ink);
   --card: var(--paper);

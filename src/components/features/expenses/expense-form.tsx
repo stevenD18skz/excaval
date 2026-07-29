@@ -7,9 +7,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { EXPENSE_CAT_META, type ExpenseCat } from "@/lib/excavla/types";
-import type { NewExpenseInput } from "@/lib/excavla/store";
-import { Plate } from "./plate";
+import { EXPENSE_CAT_META, type ExpenseCat } from "@/lib/excaval/types";
+import type { NewExpenseInput } from "@/lib/excaval/store";
+import { Plate } from "@/components/shared/plate";
 
 const CATEGORY_ORDER: ExpenseCat[] = [
   "REPUESTO",

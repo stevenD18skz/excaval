@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { useExcavlaStore } from "@/lib/excavla/store";
+import { useExcavalStore } from "@/lib/excaval/store";
 
 /**
  * Rehidrata el store desde sessionStorage después del mount, para que el
@@ -10,7 +10,7 @@ import { useExcavlaStore } from "@/lib/excavla/store";
  */
 export function StoreHydrator() {
   useEffect(() => {
-    useExcavlaStore.persist.rehydrate();
+    useExcavalStore.persist.rehydrate();
   }, []);
 
   return null;

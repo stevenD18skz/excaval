@@ -1,18 +1,18 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { MobileHeader } from "@/components/excavla/mobile-header";
-import { DesktopTopbar } from "@/components/excavla/desktop-topbar";
-import { Segmented } from "@/components/excavla/segmented";
-import { StatCard } from "@/components/excavla/stat-card";
-import { Blueprint } from "@/components/excavla/blueprint";
-import { Money } from "@/components/excavla/money";
-import { InvoiceCard } from "@/components/excavla/invoice-card";
-import { InvoiceRow } from "@/components/excavla/invoice-row";
-import { InvoiceDetailOverlay } from "@/components/excavla/invoice-detail-overlay";
-import { showActionToast } from "@/components/excavla/action-toast";
-import { useExcavlaStore } from "@/lib/excavla/store";
-import { porCobrar, sumInvoices, vencidas } from "@/lib/excavla/aggregates";
+import { MobileHeader } from "@/components/layout/mobile-header";
+import { DesktopTopbar } from "@/components/layout/desktop-topbar";
+import { Segmented } from "@/components/shared/segmented";
+import { StatCard } from "@/components/shared/stat-card";
+import { Blueprint } from "@/components/shared/blueprint";
+import { Money } from "@/components/shared/money";
+import { InvoiceCard } from "@/components/features/invoices/invoice-card";
+import { InvoiceRow } from "@/components/features/invoices/invoice-row";
+import { InvoiceDetailOverlay } from "@/components/features/invoices/invoice-detail-overlay";
+import { showActionToast } from "@/components/layout/action-toast";
+import { useExcavalStore } from "@/lib/excaval/store";
+import { porCobrar, sumInvoices, vencidas } from "@/lib/excaval/aggregates";
 
 type Filter = "todas" | "pagadas" | "pendientes";
 
@@ -28,10 +28,10 @@ export function CuentasView() {
   const filter = ((searchParams.get("filter") as Filter) || "todas") as Filter;
   const facturaId = searchParams.get("factura");
 
-  const invoices = useExcavlaStore((s) => s.invoices);
-  const clients = useExcavlaStore((s) => s.clients);
-  const markInvoicePaid = useExcavlaStore((s) => s.markInvoicePaid);
-  const undoInvoicePaid = useExcavlaStore((s) => s.undoInvoicePaid);
+  const invoices = useExcavalStore((s) => s.invoices);
+  const clients = useExcavalStore((s) => s.clients);
+  const markInvoicePaid = useExcavalStore((s) => s.markInvoicePaid);
+  const undoInvoicePaid = useExcavalStore((s) => s.undoInvoicePaid);
 
   function clientName(clientId: string): string {
     return clients.find((c) => c.id === clientId)?.name ?? clientId;

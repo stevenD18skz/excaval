@@ -1,10 +1,10 @@
-# EXCAVLA
+# EXCAVAL
 
 Sistema de Gestión Administrativa y Operativa para una empresa de maquinaria pesada. Centraliza el flujo de caja, la gestión documental y el estado de la maquinaria en una interfaz de extrema simplicidad, pensada para un único tipo de usuario: Gerencia/Directivos.
 
 ## Contexto del proyecto
 
-A diferencia de un ERP complejo con múltiples roles, Excavla elimina esa complejidad: todo el sistema está diseñado para que un directivo consulte y registre información desde el campo de obra, en el celular, sin curva de aprendizaje.
+A diferencia de un ERP complejo con múltiples roles, Excaval elimina esa complejidad: todo el sistema está diseñado para que un directivo consulte y registre información desde el campo de obra, en el celular, sin curva de aprendizaje.
 
 ### Módulos
 

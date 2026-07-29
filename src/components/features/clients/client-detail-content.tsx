@@ -2,15 +2,15 @@ import Link from "next/link";
 import { ChevronRight, Phone } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import type { Client, Invoice } from "@/lib/excavla/types";
-import { initials } from "@/lib/excavla/format";
-import { Money } from "./money";
-import { SectionLabel } from "./section-label";
+import type { Client, Invoice } from "@/lib/excaval/types";
+import { initials } from "@/lib/excaval/format";
+import { Money } from "@/components/shared/money";
+import { SectionLabel } from "@/components/shared/section-label";
 import {
   StatusBadge,
   invoiceBorderColor,
   invoiceStatusLabel,
-} from "./status-badge";
+} from "@/components/shared/status-badge";
 
 interface ClientDetailContentProps {
   client: Client;

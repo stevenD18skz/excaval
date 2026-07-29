@@ -1,15 +1,15 @@
 import { Home, MapPin } from "lucide-react";
-import type { Machine, MachineStatus } from "@/lib/excavla/types";
-import { Blueprint } from "./blueprint";
-import { Plate } from "./plate";
-import { TrafficLight } from "./traffic-light";
+import type { Machine, MachineStatus } from "@/lib/excaval/types";
+import { Blueprint } from "@/components/shared/blueprint";
+import { Plate } from "@/components/shared/plate";
+import { TrafficLight } from "@/components/shared/traffic-light";
 import { MachineStatusControl } from "./machine-status-control";
 import { MachinePhotoUpload } from "./machine-photo-upload";
 import {
   StatusBadge,
   machineStatusLabel,
   machineStatusTone,
-} from "./status-badge";
+} from "@/components/shared/status-badge";
 
 const BORDER_VAR: Record<MachineStatus, string> = {
   WORKING: "var(--status-working)",

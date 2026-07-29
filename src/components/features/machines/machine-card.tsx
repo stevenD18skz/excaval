@@ -1,14 +1,14 @@
 import Link from "next/link";
 import { MapPin } from "lucide-react";
-import type { Machine } from "@/lib/excavla/types";
-import { Plate } from "./plate";
-import { TrafficLight } from "./traffic-light";
+import type { Machine } from "@/lib/excaval/types";
+import { Plate } from "@/components/shared/plate";
+import { TrafficLight } from "@/components/shared/traffic-light";
 import { MachinePhoto } from "./machine-photo";
 import {
   StatusBadge,
   machineStatusLabel,
   machineStatusTone,
-} from "./status-badge";
+} from "@/components/shared/status-badge";
 
 interface MachineCardProps {
   machine: Machine;

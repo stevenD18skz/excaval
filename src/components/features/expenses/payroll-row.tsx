@@ -1,8 +1,8 @@
 import { cn } from "@/lib/utils";
-import type { PayrollEntry } from "@/lib/excavla/types";
-import { initials } from "@/lib/excavla/format";
-import { Money } from "./money";
-import { StatusBadge } from "./status-badge";
+import type { PayrollEntry } from "@/lib/excaval/types";
+import { initials } from "@/lib/excaval/format";
+import { Money } from "@/components/shared/money";
+import { StatusBadge } from "@/components/shared/status-badge";
 
 interface PayrollRowProps {
   entry: PayrollEntry;

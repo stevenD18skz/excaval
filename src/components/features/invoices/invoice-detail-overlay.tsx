@@ -6,15 +6,15 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import type { Client, Invoice } from "@/lib/excavla/types";
-import { Blueprint } from "./blueprint";
-import { Plate } from "./plate";
-import { Money } from "./money";
+import type { Client, Invoice } from "@/lib/excaval/types";
+import { Blueprint } from "@/components/shared/blueprint";
+import { Plate } from "@/components/shared/plate";
+import { Money } from "@/components/shared/money";
 import {
   StatusBadge,
   invoiceStatusLabel,
   invoiceStatusTone,
-} from "./status-badge";
+} from "@/components/shared/status-badge";
 
 function DetailHeader({ invoice }: { invoice: Invoice }) {
   return (

@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import type { MachineStatus } from "@/lib/excavla/types";
+import type { MachineStatus } from "@/lib/excaval/types";
 
 const LAMP_ORDER: MachineStatus[] = ["WORKING", "AVAILABLE", "MAINTENANCE"];
 

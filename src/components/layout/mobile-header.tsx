@@ -13,7 +13,7 @@ export function MobileHeader({ title, meta }: MobileHeaderProps) {
       <div className="flex items-center justify-between px-3.5 pt-4 pb-3">
         <div className="flex items-center gap-2.5">
           <span className="font-heading text-[19px] font-semibold tracking-[.14em] text-accent-500">
-            EXCAVLA
+            EXCAVAL
           </span>
           <span className="h-4 w-px bg-ink-line" />
           <span className="font-heading text-xs font-semibold tracking-[.1em] text-text-4 uppercase">

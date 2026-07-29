@@ -1,15 +1,15 @@
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
-import type { Invoice } from "@/lib/excavla/types";
-import { Plate } from "./plate";
-import { Money } from "./money";
+import type { Invoice } from "@/lib/excaval/types";
+import { Plate } from "@/components/shared/plate";
+import { Money } from "@/components/shared/money";
 import {
   StatusBadge,
   invoiceBorderColor,
   invoiceStatusLabel,
   invoiceStatusTone,
-} from "./status-badge";
+} from "@/components/shared/status-badge";
 
 interface InvoiceCardProps {
   invoice: Invoice;

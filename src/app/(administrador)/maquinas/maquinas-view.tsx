@@ -1,16 +1,16 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { MobileHeader } from "@/components/excavla/mobile-header";
-import { DesktopTopbar } from "@/components/excavla/desktop-topbar";
-import { MachineCard } from "@/components/excavla/machine-card";
-import { MachineCardDesktop } from "@/components/excavla/machine-card-desktop";
-import { MachineDetailOverlay } from "@/components/excavla/machine-detail-overlay";
-import { showActionToast } from "@/components/excavla/action-toast";
-import { useExcavlaStore } from "@/lib/excavla/store";
-import { fleetCounts } from "@/lib/excavla/aggregates";
-import { machineStatusLabel } from "@/components/excavla/status-badge";
-import type { MachineStatus } from "@/lib/excavla/types";
+import { MobileHeader } from "@/components/layout/mobile-header";
+import { DesktopTopbar } from "@/components/layout/desktop-topbar";
+import { MachineCard } from "@/components/features/machines/machine-card";
+import { MachineCardDesktop } from "@/components/features/machines/machine-card-desktop";
+import { MachineDetailOverlay } from "@/components/features/machines/machine-detail-overlay";
+import { showActionToast } from "@/components/layout/action-toast";
+import { useExcavalStore } from "@/lib/excaval/store";
+import { fleetCounts } from "@/lib/excaval/aggregates";
+import { machineStatusLabel } from "@/components/shared/status-badge";
+import type { MachineStatus } from "@/lib/excaval/types";
 import { cn } from "@/lib/utils";
 
 type MachineFilter = "todas" | MachineStatus;
@@ -43,9 +43,9 @@ export function MaquinasView() {
   const mfilter = ((searchParams.get("mfilter") as MachineFilter) || "todas") as MachineFilter;
   const selectedCode = searchParams.get("maquina");
 
-  const machines = useExcavlaStore((s) => s.machines);
-  const setMachineStatus = useExcavlaStore((s) => s.setMachineStatus);
-  const setMachinePhoto = useExcavlaStore((s) => s.setMachinePhoto);
+  const machines = useExcavalStore((s) => s.machines);
+  const setMachineStatus = useExcavalStore((s) => s.setMachineStatus);
+  const setMachinePhoto = useExcavalStore((s) => s.setMachinePhoto);
 
   function setParams(mutate: (params: URLSearchParams) => void) {
     const params = new URLSearchParams(searchParams.toString());

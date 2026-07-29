@@ -8,32 +8,32 @@ import {
   TrendingUp,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Blueprint } from "@/components/excavla/blueprint";
-import { Plate } from "@/components/excavla/plate";
-import { Money } from "@/components/excavla/money";
-import { SectionLabel } from "@/components/excavla/section-label";
-import { StatCard } from "@/components/excavla/stat-card";
-import { TrafficLight } from "@/components/excavla/traffic-light";
-import { MachinePhoto } from "@/components/excavla/machine-photo";
-import { BalanceChart } from "@/components/excavla/balance-chart";
-import { ExpenseBreakdown } from "@/components/excavla/expense-breakdown";
-import { MobileHeader } from "@/components/excavla/mobile-header";
-import { DesktopTopbar } from "@/components/excavla/desktop-topbar";
-import { showActionToast } from "@/components/excavla/action-toast";
+import { Blueprint } from "@/components/shared/blueprint";
+import { Plate } from "@/components/shared/plate";
+import { Money } from "@/components/shared/money";
+import { SectionLabel } from "@/components/shared/section-label";
+import { StatCard } from "@/components/shared/stat-card";
+import { TrafficLight } from "@/components/shared/traffic-light";
+import { MachinePhoto } from "@/components/features/machines/machine-photo";
+import { BalanceChart } from "@/components/features/dashboard/balance-chart";
+import { ExpenseBreakdown } from "@/components/features/expenses/expense-breakdown";
+import { MobileHeader } from "@/components/layout/mobile-header";
+import { DesktopTopbar } from "@/components/layout/desktop-topbar";
+import { showActionToast } from "@/components/layout/action-toast";
 import {
   StatusBadge,
   machineStatusLabel,
   machineStatusTone,
-} from "@/components/excavla/status-badge";
-import { useExcavlaStore } from "@/lib/excavla/store";
+} from "@/components/shared/status-badge";
+import { useExcavalStore } from "@/lib/excaval/store";
 import {
   computeAggregates,
   expenseBreakdown,
   fleetCounts,
-} from "@/lib/excavla/aggregates";
-import { EXPENSE_CAT_META } from "@/lib/excavla/types";
-import type { MachineStatus } from "@/lib/excavla/types";
-import { formatMoney } from "@/lib/excavla/money";
+} from "@/lib/excaval/aggregates";
+import { EXPENSE_CAT_META } from "@/lib/excaval/types";
+import type { MachineStatus } from "@/lib/excaval/types";
+import { formatMoney } from "@/lib/excaval/money";
 import { cn } from "@/lib/utils";
 
 const STATUS_BORDER_VAR: Record<MachineStatus, string> = {
@@ -55,12 +55,12 @@ function dayOf(dateStr: string): number {
 }
 
 export default function DashboardPage() {
-  const invoices = useExcavlaStore((s) => s.invoices);
-  const expenses = useExcavlaStore((s) => s.expenses);
-  const machines = useExcavlaStore((s) => s.machines);
-  const clients = useExcavlaStore((s) => s.clients);
-  const markInvoicePaid = useExcavlaStore((s) => s.markInvoicePaid);
-  const undoInvoicePaid = useExcavlaStore((s) => s.undoInvoicePaid);
+  const invoices = useExcavalStore((s) => s.invoices);
+  const expenses = useExcavalStore((s) => s.expenses);
+  const machines = useExcavalStore((s) => s.machines);
+  const clients = useExcavalStore((s) => s.clients);
+  const markInvoicePaid = useExcavalStore((s) => s.markInvoicePaid);
+  const undoInvoicePaid = useExcavalStore((s) => s.undoInvoicePaid);
 
   function clientName(clientId: string): string {
     return clients.find((c) => c.id === clientId)?.name ?? clientId;

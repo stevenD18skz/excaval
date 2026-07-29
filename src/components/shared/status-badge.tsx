@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
-import type { Invoice, MachineStatus } from "@/lib/excavla/types";
+import type { Invoice, MachineStatus } from "@/lib/excaval/types";
 
 export type StatusTone = "working" | "available" | "maintenance" | "off";
 
